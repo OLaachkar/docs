@@ -123,9 +123,9 @@
       {
         "header": "Resources",
         "items": [
-          { "label": "Docs Home", "href": "/docs" },
-          { "label": "Best Practices", "href": "/docs/guides/best-practices" },
-          { "label": "Troubleshooting", "href": "/docs/guides/troubleshooting" }
+          { "label": "Docs Home", "href": "https://docs.verba.ink" },
+          { "label": "Best Practices", "href": "/guides/best-practices" },
+          { "label": "Troubleshooting", "href": "/guides/troubleshooting" }
         ]
       }
     ]
