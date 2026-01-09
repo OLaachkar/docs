@@ -1,0 +1,42 @@
+---
+title: "Discord deployment"
+description: "Turn a verb into a Discord bot with the right permissions."
+---
+
+## What you need
+
+- A Discord application
+- A bot token
+- The right intents turned on
+
+<Warning>
+  Enable all privileged intents in the Discord Developer Portal. Without them,
+  the bot will not come online or read messages.
+</Warning>
+
+## Set it up
+
+<Steps>
+  <Step title="Create a Discord application">
+    Go to the Discord Developer Portal and create a new app. Add a bot user.
+  </Step>
+  <Step title="Copy the bot token">
+    Store it somewhere safe. Never share it in public.
+  </Step>
+  <Step title="Connect in Verba">
+    Open your verb settings and paste the token in the Discord section.
+  </Step>
+  <Step title="Invite the bot">
+    Use the OAuth URL and choose the permissions you need.
+  </Step>
+</Steps>
+
+## Keep it smooth
+
+- Start in a test server.
+- Give the bot only the permissions it needs.
+- Watch a few conversations before going live.
+
+<Card title="Bot settings" icon="gear" href="https://verba.ink/overview">
+  Review settings in your dashboard before launch.
+</Card>

@@ -1,0 +1,45 @@
+---
+title: "AI engine settings"
+description: "Tune creativity, context, and search behavior."
+---
+
+## The core knobs
+
+These three settings do most of the work:
+
+| Control | What it does | Quick tip |
+| --- | --- | --- |
+| Temperature | How creative replies feel. | Start at 0.7. |
+| Top-p | How wide the word choices are. | Keep near 0.9. |
+| Context | How many recent messages are sent. | Raise if it forgets. |
+
+<Info>
+  Model availability depends on your tier and may change over time. If a model
+  is missing, switch to another option or check your plan.
+</Info>
+
+## Easy presets
+
+<CardGroup cols={2}>
+  <Card title="Stable and focused" icon="bullseye">
+    Temperature 0.4 to 0.6 and top-p 0.7 to 0.8.
+  </Card>
+  <Card title="Balanced default" icon="sliders">
+    Temperature 0.7 and top-p 0.9.
+  </Card>
+  <Card title="Creative" icon="bolt">
+    Temperature 0.9 to 1.1 and top-p 0.95.
+  </Card>
+  <Card title="Cost aware" icon="wallet">
+    Lower context and avoid web search unless required.
+  </Card>
+</CardGroup>
+
+## Web search
+
+Turn it on only when you need fresh info. Keep it off for roleplay or
+consistent lore to save credits.
+
+<Note>
+  Web search can increase response time and cost. Use it with intent.
+</Note>

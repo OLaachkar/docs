@@ -1,0 +1,133 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Verba Documentation",
+  "colors": {
+    "primary": "#2563EB",
+    "light": "#60A5FA",
+    "dark": "#1E40AF"
+  },
+  "favicon": "/favicon.png",
+  "logo": {
+    "light": "/logo/light.png",
+    "dark": "/logo/dark.png"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Community",
+        "href": "https://discord.gg/verba"
+      },
+      {
+        "label": "Status",
+        "href": "https://verba.ink/status"
+      },
+      {
+        "label": "Billing",
+        "href": "/billing"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Open Verba",
+      "href": "https://verba.ink"
+    }
+  },
+  "navigation": {
+    "groups": [
+      {
+        "group": "Getting Started",
+        "pages": [
+          "index",
+          "quickstart",
+          "guides/getting-around",
+          "guides/first-verb"
+        ]
+      },
+      {
+        "group": "Build and Customize",
+        "pages": [
+          "guides/personality-playbook",
+          "guides/visual-identity",
+          "guides/ai-engine",
+          "guides/memory-and-knowledge",
+          "guides/web-search"
+        ]
+      },
+      {
+        "group": "Chat and Community",
+        "pages": [
+          "guides/chat-and-groups",
+          "guides/community"
+        ]
+      },
+      {
+        "group": "Media and Voice",
+        "pages": [
+          "guides/image-generation",
+          "guides/voice-and-audio"
+        ]
+      },
+      {
+        "group": "Deploy and Integrate",
+        "pages": [
+          "guides/discord"
+        ]
+      },
+      {
+        "group": "Safety and Privacy",
+        "pages": [
+          "guides/moderation",
+          "guides/notifications-and-privacy"
+        ]
+      },
+      {
+        "group": "Billing and Accounts",
+        "pages": [
+          "guides/credits",
+          "guides/billing-and-refunds"
+        ]
+      },
+      {
+        "group": "Help and FAQ",
+        "pages": [
+          "guides/best-practices",
+          "guides/troubleshooting",
+          "guides/faq"
+        ]
+      }
+    ]
+  },
+  "footer": {
+    "socials": {
+      "discord": "https://discord.gg/verba",
+      "x": "https://x.com/VerbaInk"
+    },
+    "links": [
+      {
+        "header": "Product",
+        "items": [
+          { "label": "Verba App", "href": "https://verba.ink" },
+          { "label": "Pricing", "href": "https://verba.ink/pricing" },
+          { "label": "Billing", "href": "https://verba.ink/billing" }
+        ]
+      },
+      {
+        "header": "Support",
+        "items": [
+          { "label": "Community", "href": "https://discord.gg/verba" },
+          { "label": "Status", "href": "https://verba.ink/status" },
+          { "label": "Contact", "href": "https://verba.ink/contact" }
+        ]
+      },
+      {
+        "header": "Resources",
+        "items": [
+          { "label": "Docs Home", "href": "/docs" },
+          { "label": "Best Practices", "href": "/docs/guides/best-practices" },
+          { "label": "Troubleshooting", "href": "/docs/guides/troubleshooting" }
+        ]
+      }
+    ]
+  }
+}
