@@ -50,7 +50,11 @@ Accepted formats:
 Text-only completion endpoint.
 
 <Note>
-  `stream` is not supported in v1. If sent, it must be `false`.
+  Supports both standard JSON and streaming. Set `stream: true` to receive Server-Sent Events (SSE) chunks.
+</Note>
+
+<Note>
+  Streaming on `/v1/response` is available for Plus, Pro, and Ultra plans.
 </Note>
 
 Required:
@@ -64,7 +68,7 @@ Optional:
 - `temperature` number (`0..2`)
 - `top_p` number (`0..1`)
 - `max_tokens` number
-- `stream` boolean (`false` only)
+- `stream` boolean (`true` for SSE stream, default `false`)
 
 ### Request examples
 
@@ -179,6 +183,190 @@ Invoke-RestMethod `
   }
 }
 ```
+
+### Streaming (`stream: true`)
+
+With `stream: true`, `/v1/response` returns `text/event-stream` and emits `data:` events.
+
+- Each event is an OpenAI-style `chat.completion.chunk` payload.
+- The final event is `data: [DONE]`.
+- You should concatenate `choices[0].delta.content` chunks to build the assistant message.
+- Free plans return `403 stream_plan_upgrade_required` when `stream: true` is used.
+
+Example chunk:
+
+```json
+{
+  "id": "chatcmpl_...",
+  "object": "chat.completion.chunk",
+  "created": 1739730000,
+  "model": "m_free_a",
+  "character": "mycharacter_abc",
+  "session_id": "sess_...",
+  "choices": [
+    {
+      "index": 0,
+      "delta": { "content": "Hello" },
+      "finish_reason": null
+    }
+  ]
+}
+```
+
+Final chunk:
+
+```json
+{
+  "id": "chatcmpl_...",
+  "object": "chat.completion.chunk",
+  "created": 1739730000,
+  "model": "m_free_a",
+  "character": "mycharacter_abc",
+  "session_id": "sess_...",
+  "choices": [
+    {
+      "index": 0,
+      "delta": {},
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+  }
+}
+```
+
+Then:
+
+```text
+data: [DONE]
+```
+
+### Streaming request examples
+
+<CodeGroup>
+```bash cURL
+curl -N https://api.verba.ink/v1/response \
+  -X POST \
+  -H "Authorization: Bearer $VERBA_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "character": "mycharacter_abc",
+    "messages": [
+      { "role": "user", "content": "Give me a short greeting." }
+    ],
+    "stream": true
+  }'
+```
+
+```javascript Node.js
+const response = await fetch("https://api.verba.ink/v1/response", {
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${process.env.VERBA_API_KEY}`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    character: "mycharacter_abc",
+    messages: [{ role: "user", content: "Give me a short greeting." }],
+    stream: true
+  })
+});
+
+const reader = response.body.getReader();
+const decoder = new TextDecoder();
+let buffer = "";
+
+while (true) {
+  const { done, value } = await reader.read();
+  if (done) break;
+
+  buffer += decoder.decode(value, { stream: true });
+  const events = buffer.split("\\n\\n");
+  buffer = events.pop() || "";
+
+  for (const event of events) {
+    if (!event.startsWith("data:")) continue;
+    const data = event.slice(5).trim();
+    if (data === "[DONE]") {
+      process.stdout.write("\\n");
+      continue;
+    }
+    const chunk = JSON.parse(data);
+    const delta = chunk.choices?.[0]?.delta?.content;
+    if (delta) process.stdout.write(delta);
+  }
+}
+```
+
+```python Python
+import json
+import os
+import requests
+
+response = requests.post(
+    "https://api.verba.ink/v1/response",
+    headers={
+        "Authorization": f"Bearer {os.environ['VERBA_API_KEY']}",
+        "Content-Type": "application/json",
+    },
+    json={
+        "character": "mycharacter_abc",
+        "messages": [{"role": "user", "content": "Give me a short greeting."}],
+        "stream": True,
+    },
+    stream=True,
+    timeout=120,
+)
+
+for line in response.iter_lines(decode_unicode=True):
+    if not line or not line.startswith("data:"):
+        continue
+    data = line[5:].strip()
+    if data == "[DONE]":
+        print()
+        break
+    chunk = json.loads(data)
+    delta = (((chunk.get("choices") or [{}])[0].get("delta") or {}).get("content"))
+    if delta:
+        print(delta, end="", flush=True)
+```
+
+```powershell PowerShell
+$json = @{
+  character = "mycharacter_abc"
+  messages = @(
+    @{
+      role = "user"
+      content = "Give me a short greeting."
+    }
+  )
+  stream = $true
+} | ConvertTo-Json -Depth 10
+
+$http = [System.Net.Http.HttpClient]::new()
+$request = New-Object System.Net.Http.HttpRequestMessage([System.Net.Http.HttpMethod]::Post, "https://api.verba.ink/v1/response")
+$request.Headers.Authorization = [System.Net.Http.Headers.AuthenticationHeaderValue]::new("Bearer", $env:VERBA_API_KEY)
+$request.Content = New-Object System.Net.Http.StringContent($json, [System.Text.Encoding]::UTF8, "application/json")
+
+$response = $http.SendAsync($request, [System.Net.Http.HttpCompletionOption]::ResponseHeadersRead).Result
+$stream = $response.Content.ReadAsStreamAsync().Result
+$reader = New-Object System.IO.StreamReader($stream)
+
+while (-not $reader.EndOfStream) {
+  $line = $reader.ReadLine()
+  if (-not $line -or -not $line.StartsWith("data:")) { continue }
+  $data = $line.Substring(5).Trim()
+  if ($data -eq "[DONE]") { break }
+  $chunk = $data | ConvertFrom-Json
+  $delta = $chunk.choices[0].delta.content
+  if ($delta) { Write-Host -NoNewline $delta }
+}
+Write-Host ""
+```
+</CodeGroup>
 
 ## POST `/v1/image`
 
@@ -321,11 +509,11 @@ Errors return JSON with a top-level `message` and an `error` object.
 
 ```json
 {
-  "message": "stream=true is not supported in v1",
+  "message": "stream must be a boolean",
   "error": {
-    "message": "stream=true is not supported in v1",
-    "type": "stream_not_supported",
-    "code": "stream_not_supported"
+    "message": "stream must be a boolean",
+    "type": "invalid_stream",
+    "code": "invalid_stream"
   }
 }
 ```
@@ -334,5 +522,6 @@ Common error cases:
 
 - `401 invalid_api_key` for missing/invalid/revoked API key
 - `403 verb_access_denied` for private character access by non-owner
-- `400 stream_not_supported` when `stream` is not `false`
+- `403 stream_plan_upgrade_required` when free plans request `stream: true`
+- `400 invalid_stream` when `stream` is not a boolean
 - `400 invalid_size` when `/v1/image` size is not `1024x1024`
