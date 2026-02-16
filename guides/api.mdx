@@ -1,0 +1,156 @@
+---
+title: "Public API v1"
+description: "Use API keys to talk to verbs outside Discord."
+---
+
+## Base URL
+
+`https://api.verba.ink`
+
+## Authentication
+
+Create API keys in **Settings -> Security -> API Keys**.
+
+Send keys in either header:
+
+- `Authorization: Bearer vka_...`
+- `x-api-key: vka_...`
+
+## Endpoints
+
+- `POST /v1/response` for text chat completions
+- `POST /v1/image` for image generation
+
+## POST `/v1/response`
+
+Text-only completion endpoint (no streaming in v1).
+
+Required:
+
+- `verb_id` string
+- `messages` array
+
+Optional:
+
+- `session_id` string
+- `temperature` number (`0..2`)
+- `top_p` number (`0..1`)
+- `max_tokens` number
+- `stream` boolean (`false` only)
+
+```bash
+curl https://api.verba.ink/v1/response \
+  -X POST \
+  -H "Authorization: Bearer $VERBA_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "verb_id": "my-verb-id",
+    "messages": [
+      { "role": "user", "content": "Tell me a short story about space pirates." }
+    ]
+  }'
+```
+
+Example response:
+
+```json
+{
+  "id": "chatcmpl_...",
+  "object": "chat.completion",
+  "created": 1739730000,
+  "model": "m_free_a",
+  "verb_id": "my-verb-id",
+  "session_id": "sess_...",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "..."
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+  }
+}
+```
+
+## POST `/v1/image`
+
+Generates a single image URL.
+
+Required:
+
+- `verb_id` string
+- `prompt` string
+
+Optional:
+
+- `session_id` string
+- `image_urls` string array (reference images)
+- `size` (`1024x1024` only)
+- `response_format` (`url` only)
+
+```bash
+curl https://api.verba.ink/v1/image \
+  -X POST \
+  -H "x-api-key: $VERBA_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "verb_id": "my-verb-id",
+    "prompt": "A cinematic portrait of a cyberpunk fox detective",
+    "size": "1024x1024",
+    "response_format": "url"
+  }'
+```
+
+Example response:
+
+```json
+{
+  "created": 1739730000,
+  "verb_id": "my-verb-id",
+  "session_id": "sess_...",
+  "model": "m_free_a",
+  "revised_prompt": "A cinematic portrait of a cyberpunk fox detective",
+  "data": [
+    {
+      "url": "https://api.verba.ink/uploads/generated-images/img_...png"
+    }
+  ]
+}
+```
+
+## Sessions and memory
+
+- `session_id` is optional.
+- If omitted, Verba generates one and returns it.
+- Reusing the same `session_id` preserves API conversation context for that caller + verb pair.
+- API memory is stored in conversation history only (not DM or message logs).
+
+## Access and billing behavior
+
+- API access is available to all users.
+- Verb privacy still applies:
+  - Private verbs: owner only
+  - Public verbs: all API users
+- Billing, model-tier checks, and verb usage counters apply to the **verb owner account**.
+
+## Errors
+
+Errors return JSON with an `error` object.
+
+```json
+{
+  "message": "stream=true is not supported in v1",
+  "error": {
+    "message": "stream=true is not supported in v1",
+    "type": "stream_not_supported",
+    "code": "stream_not_supported"
+  }
+}
+```

@@ -71,7 +71,8 @@
       {
         "group": "Deploy and Integrate",
         "pages": [
-          "guides/discord"
+          "guides/discord",
+          "guides/api"
         ]
       },
       {
