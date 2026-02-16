@@ -1,20 +1,44 @@
 ---
 title: "Public API v1"
-description: "Use API keys to talk to verbs outside Discord."
+description: "Use API keys to talk to characters outside Discord."
 ---
 
 ## Base URL
 
 `https://api.verba.ink`
 
+## Quick start
+
+<Steps>
+  <Step title="Create an API key">
+    Go to Verba <strong>Settings -&gt; Security -&gt; API Keys</strong> and create a key.
+  </Step>
+  <Step title="Pick a character">
+    Use your character vanity slug or vanity URL (for example `mycharacter_abc` or `https://verba.ink/v/mycharacter_abc`).
+  </Step>
+  <Step title="Call an endpoint">
+    Use `POST /v1/response` for text replies, or `POST /v1/image` for image generation.
+  </Step>
+</Steps>
+
 ## Authentication
 
-Create API keys in **Settings -> Security -> API Keys**.
-
-Send keys in either header:
+Send your API key in either header:
 
 - `Authorization: Bearer vka_...`
 - `x-api-key: vka_...`
+
+If no key is provided, or the key is invalid/revoked, the API returns `401`.
+
+## Character identifier
+
+Both endpoints use `character` (not `verb_id`).
+
+Accepted formats:
+
+- Vanity slug: `mycharacter_abc`
+- Vanity path: `/v/mycharacter_abc`
+- Full vanity URL: `https://verba.ink/v/mycharacter_abc`
 
 ## Endpoints
 
@@ -23,11 +47,15 @@ Send keys in either header:
 
 ## POST `/v1/response`
 
-Text-only completion endpoint (no streaming in v1).
+Text-only completion endpoint.
+
+<Note>
+  `stream` is not supported in v1. If sent, it must be `false`.
+</Note>
 
 Required:
 
-- `verb_id` string
+- `character` string (vanity URL or vanity slug)
 - `messages` array
 
 Optional:
@@ -38,20 +66,93 @@ Optional:
 - `max_tokens` number
 - `stream` boolean (`false` only)
 
-```bash
+### Request examples
+
+<CodeGroup>
+```bash cURL
 curl https://api.verba.ink/v1/response \
   -X POST \
   -H "Authorization: Bearer $VERBA_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "verb_id": "my-verb-id",
+    "character": "mycharacter_abc",
     "messages": [
       { "role": "user", "content": "Tell me a short story about space pirates." }
-    ]
+    ],
+    "stream": false
   }'
 ```
 
-Example response:
+```javascript Node.js
+const response = await fetch("https://api.verba.ink/v1/response", {
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${process.env.VERBA_API_KEY}`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    character: "mycharacter_abc",
+    messages: [
+      { role: "user", content: "Tell me a short story about space pirates." }
+    ],
+    stream: false
+  })
+});
+
+const data = await response.json();
+console.log(data);
+```
+
+```python Python
+import os
+import requests
+
+response = requests.post(
+    "https://api.verba.ink/v1/response",
+    headers={
+        "Authorization": f"Bearer {os.environ['VERBA_API_KEY']}",
+        "Content-Type": "application/json",
+    },
+    json={
+        "character": "mycharacter_abc",
+        "messages": [
+            {"role": "user", "content": "Tell me a short story about space pirates."}
+        ],
+        "stream": False,
+    },
+    timeout=60,
+)
+
+print(response.status_code)
+print(response.json())
+```
+
+```powershell PowerShell
+$headers = @{
+  Authorization = "Bearer $env:VERBA_API_KEY"
+  "Content-Type" = "application/json"
+}
+
+$body = @{
+  character = "mycharacter_abc"
+  messages = @(
+    @{
+      role = "user"
+      content = "Tell me a short story about space pirates."
+    }
+  )
+  stream = $false
+} | ConvertTo-Json -Depth 10
+
+Invoke-RestMethod `
+  -Method Post `
+  -Uri "https://api.verba.ink/v1/response" `
+  -Headers $headers `
+  -Body $body
+```
+</CodeGroup>
+
+### Example response
 
 ```json
 {
@@ -59,7 +160,7 @@ Example response:
   "object": "chat.completion",
   "created": 1739730000,
   "model": "m_free_a",
-  "verb_id": "my-verb-id",
+  "character": "mycharacter_abc",
   "session_id": "sess_...",
   "choices": [
     {
@@ -81,11 +182,11 @@ Example response:
 
 ## POST `/v1/image`
 
-Generates a single image URL.
+Generates one image URL.
 
 Required:
 
-- `verb_id` string
+- `character` string (vanity URL or vanity slug)
 - `prompt` string
 
 Optional:
@@ -95,25 +196,91 @@ Optional:
 - `size` (`1024x1024` only)
 - `response_format` (`url` only)
 
-```bash
+### Request examples
+
+<CodeGroup>
+```bash cURL
 curl https://api.verba.ink/v1/image \
   -X POST \
-  -H "x-api-key: $VERBA_API_KEY" \
+  -H "Authorization: Bearer $VERBA_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "verb_id": "my-verb-id",
+    "character": "mycharacter_abc",
     "prompt": "A cinematic portrait of a cyberpunk fox detective",
     "size": "1024x1024",
     "response_format": "url"
   }'
 ```
 
-Example response:
+```javascript Node.js
+const response = await fetch("https://api.verba.ink/v1/image", {
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${process.env.VERBA_API_KEY}`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    character: "mycharacter_abc",
+    prompt: "A cinematic portrait of a cyberpunk fox detective",
+    size: "1024x1024",
+    response_format: "url"
+  })
+});
+
+const data = await response.json();
+console.log(data);
+```
+
+```python Python
+import os
+import requests
+
+response = requests.post(
+    "https://api.verba.ink/v1/image",
+    headers={
+        "Authorization": f"Bearer {os.environ['VERBA_API_KEY']}",
+        "Content-Type": "application/json",
+    },
+    json={
+        "character": "mycharacter_abc",
+        "prompt": "A cinematic portrait of a cyberpunk fox detective",
+        "size": "1024x1024",
+        "response_format": "url",
+    },
+    timeout=120,
+)
+
+print(response.status_code)
+print(response.json())
+```
+
+```powershell PowerShell
+$headers = @{
+  Authorization = "Bearer $env:VERBA_API_KEY"
+  "Content-Type" = "application/json"
+}
+
+$body = @{
+  character = "mycharacter_abc"
+  prompt = "A cinematic portrait of a cyberpunk fox detective"
+  size = "1024x1024"
+  response_format = "url"
+} | ConvertTo-Json -Depth 10
+
+Invoke-RestMethod `
+  -Method Post `
+  -Uri "https://api.verba.ink/v1/image" `
+  -Headers $headers `
+  -Body $body
+```
+</CodeGroup>
+
+### Example response
 
 ```json
 {
   "created": 1739730000,
-  "verb_id": "my-verb-id",
+  "character": "mycharacter_abc",
   "session_id": "sess_...",
   "model": "m_free_a",
   "revised_prompt": "A cinematic portrait of a cyberpunk fox detective",
@@ -132,17 +299,25 @@ Example response:
 - Reusing the same `session_id` preserves API conversation context for that caller + verb pair.
 - API memory is stored in conversation history only (not DM or message logs).
 
-## Access and billing behavior
+## Access, billing, and limits
 
 - API access is available to all users.
 - Verb privacy still applies:
-  - Private verbs: owner only
-  - Public verbs: all API users
-- Billing, model-tier checks, and verb usage counters apply to the **verb owner account**.
+  - Private characters: owner only
+  - Public characters: any API caller
+- Billing and tier/model enforcement are applied to the **character owner account**.
+- `/v1/*` uses account rate limits via the same per-user limiter model.
 
-## Errors
+## Message format (`/v1/response`)
 
-Errors return JSON with an `error` object.
+- `messages` must be an array.
+- Include at least one `user` message.
+- Allowed roles: `user`, `assistant`, `system` (`assistant` maps internally to model role).
+- v1 response endpoint is text-only.
+
+## Error model
+
+Errors return JSON with a top-level `message` and an `error` object.
 
 ```json
 {
@@ -154,3 +329,10 @@ Errors return JSON with an `error` object.
   }
 }
 ```
+
+Common error cases:
+
+- `401 invalid_api_key` for missing/invalid/revoked API key
+- `403 verb_access_denied` for private character access by non-owner
+- `400 stream_not_supported` when `stream` is not `false`
+- `400 invalid_size` when `/v1/image` size is not `1024x1024`
