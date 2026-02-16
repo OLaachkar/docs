@@ -47,7 +47,7 @@ Accepted formats:
 
 ## POST `/v1/response`
 
-Text-only completion endpoint.
+Text completion endpoint. You can optionally attach image URLs for vision-enabled prompting.
 
 <Note>
   Supports both standard JSON and streaming. Set `stream: true` to receive Server-Sent Events (SSE) chunks.
@@ -60,7 +60,7 @@ Text-only completion endpoint.
 Required:
 
 - `character` string (vanity URL or vanity slug)
-- `messages` array
+- `messages` array (`role` + `content`)
 
 Optional:
 
@@ -69,6 +69,16 @@ Optional:
 - `top_p` number (`0..1`)
 - `max_tokens` number
 - `stream` boolean (`true` for SSE stream, default `false`)
+- `image_urls` array of image URLs (`http/https`, max 4)
+
+`messages[].content` supports:
+
+- String text content
+- Array parts with:
+  - `{ "type": "text", "text": "..." }`
+  - `{ "type": "image_url", "image_url": { "url": "https://..." } }`
+
+You can pass image URLs either in `messages[].content` or top-level `image_urls` (both are merged, max 4 total).
 
 ### Request examples
 
@@ -155,6 +165,24 @@ Invoke-RestMethod `
   -Body $body
 ```
 </CodeGroup>
+
+### Vision input example
+
+```json
+{
+  "character": "mycharacter_abc",
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        { "type": "text", "text": "Describe what is happening here." },
+        { "type": "image_url", "image_url": { "url": "https://example.com/city.jpg" } }
+      ]
+    }
+  ],
+  "stream": false
+}
+```
 
 ### Example response
 
@@ -501,7 +529,9 @@ Invoke-RestMethod `
 - `messages` must be an array.
 - Include at least one `user` message.
 - Allowed roles: `user`, `assistant`, `system` (`assistant` maps internally to model role).
-- v1 response endpoint is text-only.
+- `messages[].content` supports text and `image_url` parts.
+- Top-level `image_urls` is also supported.
+- Combined image URL limit is 4.
 
 ## Error model
 
@@ -524,4 +554,7 @@ Common error cases:
 - `403 verb_access_denied` for private character access by non-owner
 - `403 stream_plan_upgrade_required` when free plans request `stream: true`
 - `400 invalid_stream` when `stream` is not a boolean
+- `400 invalid_image_urls` when image URL payload format is invalid
+- `400 blocked_image_url` when image URL targets local/private network hosts
+- `400 too_many_image_urls` when more than 4 image URLs are provided
 - `400 invalid_size` when `/v1/image` size is not `1024x1024`
