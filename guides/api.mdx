@@ -543,16 +543,20 @@ Errors return JSON with a top-level `message` and an `error` object.
   "error": {
     "message": "stream must be a boolean",
     "type": "invalid_stream",
-    "code": "invalid_stream"
+    "code": 400
   }
 }
 ```
+
+- `error.type`: stable machine-readable error type (for program logic)
+- `error.code`: HTTP status code
 
 Common error cases:
 
 - `401 invalid_api_key` for missing/invalid/revoked API key
 - `403 verb_access_denied` for private character access by non-owner
 - `403 stream_plan_upgrade_required` when free plans request `stream: true`
+- `403 insufficient_credits` when the character owner has no credits for the selected model
 - `400 invalid_stream` when `stream` is not a boolean
 - `400 invalid_image_urls` when image URL payload format is invalid
 - `400 blocked_image_url` when image URL targets local/private network hosts
