@@ -234,6 +234,12 @@ Tool object shape:
 - `"auto"` (default model decides)
 - `"none"` (disable tool calls for this request)
 
+How `auto` works:
+
+- Verba first lets the model decide natively (provider `tool_calls` if supported).
+- If the provider does not emit native `tool_calls`, Verba runs an internal model planner step to decide whether one tool should be used.
+- This preserves model-driven behavior while improving compatibility across providers.
+
 When `debug.tools=true`:
 
 - Non-stream response includes `debug.tool_runs[]`.
