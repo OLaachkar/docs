@@ -70,6 +70,9 @@ Optional:
 - `max_tokens` number
 - `stream` boolean (`true` for SSE stream, default `false`)
 - `image_urls` array of image URLs (`http/https`, max 4)
+- `tools` array (OpenAI-style function tools, max 8)
+- `tool_choice` (`"auto"`, `"none"`, or function selector object)
+- `debug` object (`{ "tools": true }` to include tool traces)
 
 `messages[].content` supports:
 
@@ -79,6 +82,8 @@ Optional:
   - `{ "type": "image_url", "image_url": { "url": "https://..." } }`
 
 You can pass image URLs either in `messages[].content` or top-level `image_urls` (both are merged, max 4 total).
+You cannot pass custom `system` messages on `/v1/response`; character personality + system instructions are applied automatically.
+Tool configuration is request-scoped only (not stored on your character/dashboard).
 
 ### Request examples
 
@@ -184,6 +189,129 @@ Invoke-RestMethod `
 }
 ```
 
+### Request-scoped tool calling
+
+`/v1/response` supports server-executed HTTP function tools passed in the request.
+
+- Tools are not persisted.
+- Allowed methods: `GET`, `POST`.
+- Tool URLs support only `http/https` on ports `80` or `443`.
+- Local/private network targets are blocked.
+- Tool responses must be `application/json` (or `+json`) or `text/plain`.
+- Max executed tool calls per request: `2`.
+- Built-in character `webSearch` remains separate and unchanged.
+
+Tool object shape:
+
+```json
+{
+  "type": "function",
+  "function": {
+    "name": "search_web",
+    "description": "Search latest web results",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "query": { "type": "string" }
+      },
+      "required": ["query"]
+    },
+    "x_verba_http": {
+      "url": "https://example.com/search",
+      "method": "GET",
+      "query_param": "q",
+      "headers": {
+        "Authorization": "Bearer sk_live_..."
+      },
+      "timeout_ms": 8000
+    }
+  }
+}
+```
+
+`tool_choice` supports:
+
+- `"auto"` (default model decides)
+- `"none"` (disable tool calls for this request)
+- `{ "type": "function", "function": { "name": "search_web" } }`
+
+When `debug.tools=true`:
+
+- Non-stream response includes `debug.tool_runs[]`.
+- Stream response emits extra SSE frames with `object: "chat.completion.tool_trace"`.
+
+### Tool example (`GET` web search)
+
+```json
+{
+  "character": "mycharacter_abc",
+  "messages": [
+    { "role": "user", "content": "What happened in AI this week?" }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "search_web",
+        "description": "Search web headlines",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "query": { "type": "string" }
+          },
+          "required": ["query"]
+        },
+        "x_verba_http": {
+          "url": "https://example-search-api.com/search",
+          "method": "GET",
+          "query_param": "q",
+          "headers": {
+            "Authorization": "Bearer sk_live_..."
+          }
+        }
+      }
+    }
+  ],
+  "tool_choice": "auto",
+  "debug": { "tools": true }
+}
+```
+
+### Tool example (`POST` JSON)
+
+```json
+{
+  "character": "mycharacter_abc",
+  "messages": [
+    { "role": "user", "content": "Fetch weather for Paris and summarize it." }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "weather_lookup",
+        "description": "Return weather by city",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "city": { "type": "string" }
+          },
+          "required": ["city"]
+        },
+        "x_verba_http": {
+          "url": "https://example.com/weather",
+          "method": "POST",
+          "headers": {
+            "Authorization": "Bearer sk_live_..."
+          },
+          "body_mode": "json"
+        }
+      }
+    }
+  ]
+}
+```
+
 ### Example response
 
 ```json
@@ -212,11 +340,33 @@ Invoke-RestMethod `
 }
 ```
 
+Example response addition when `debug.tools=true`:
+
+```json
+{
+  "debug": {
+    "tool_runs": [
+      {
+        "tool_name": "search_web",
+        "method": "GET",
+        "url": "https://example-search-api.com/search?q=ai",
+        "status": "success",
+        "http_status": 200,
+        "duration_ms": 412,
+        "request_preview": { "query": { "q": "ai" } },
+        "response_preview": { "results": [{ "title": "..." }] }
+      }
+    ]
+  }
+}
+```
+
 ### Streaming (`stream: true`)
 
 With `stream: true`, `/v1/response` returns `text/event-stream` and emits `data:` events.
 
 - Each event is an OpenAI-style `chat.completion.chunk` payload.
+- If `debug.tools=true` and tools run, extra events use `object: "chat.completion.tool_trace"`.
 - The final event is `data: [DONE]`.
 - You should concatenate `choices[0].delta.content` chunks to build the assistant message.
 - Free plans return `403 stream_plan_upgrade_required` when `stream: true` is used.
@@ -396,6 +546,35 @@ Write-Host ""
 ```
 </CodeGroup>
 
+Streaming with tools works the same way: the API executes tool calls server-side first, then streams final assistant text chunks.
+
+```json
+{
+  "character": "mycharacter_abc",
+  "messages": [{ "role": "user", "content": "Find and summarize today's top AI headline." }],
+  "stream": true,
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "search_web",
+        "parameters": {
+          "type": "object",
+          "properties": { "query": { "type": "string" } },
+          "required": ["query"]
+        },
+        "x_verba_http": {
+          "url": "https://example-search-api.com/search",
+          "method": "GET",
+          "query_param": "q"
+        }
+      }
+    }
+  ],
+  "debug": { "tools": true }
+}
+```
+
 ## POST `/v1/image`
 
 Generates one image URL.
@@ -528,10 +707,13 @@ Invoke-RestMethod `
 
 - `messages` must be an array.
 - Include at least one `user` message.
-- Allowed roles: `user`, `assistant`, `system` (`assistant` maps internally to model role).
+- Allowed roles: `user`, `assistant` (`assistant` maps internally to model role).
+- `system` role is blocked on `/v1/response` to prevent overriding character instructions.
 - `messages[].content` supports text and `image_url` parts.
 - Top-level `image_urls` is also supported.
 - Combined image URL limit is 4.
+- `tools` is optional and request-scoped (max 8 per request).
+- `tool_choice` is optional (`auto`, `none`, or specific function).
 
 ## Error model
 
@@ -557,8 +739,14 @@ Common error cases:
 - `403 verb_access_denied` for private character access by non-owner
 - `403 stream_plan_upgrade_required` when free plans request `stream: true`
 - `403 insufficient_credits` when the character owner has no credits for the selected model
+- `400 invalid_message_role` when `system` role is provided in `messages`
 - `400 invalid_stream` when `stream` is not a boolean
+- `400 invalid_tools` for malformed tool schema/config
+- `400 invalid_tool_choice` for invalid `tool_choice`
+- `400 blocked_tool_url` when tool URL targets local/private hosts
+- `400 tool_call_limit_exceeded` when model attempts more than 2 tool calls
 - `400 invalid_image_urls` when image URL payload format is invalid
 - `400 blocked_image_url` when image URL targets local/private network hosts
 - `400 too_many_image_urls` when more than 4 image URLs are provided
+- `502 tool_execution_failed` when upstream tool execution fails
 - `400 invalid_size` when `/v1/image` size is not `1024x1024`
