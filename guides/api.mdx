@@ -71,7 +71,7 @@ Optional:
 - `stream` boolean (`true` for SSE stream, default `false`)
 - `image_urls` array of image URLs (`http/https`, max 4)
 - `tools` array (OpenAI-style function tools, max 8)
-- `tool_choice` (`"auto"`, `"none"`, or function selector object)
+- `tool_choice` (`"auto"` or `"none"`)
 - `debug` object (`{ "tools": true }` to include tool traces)
 
 `messages[].content` supports:
@@ -233,7 +233,6 @@ Tool object shape:
 
 - `"auto"` (default model decides)
 - `"none"` (disable tool calls for this request)
-- `{ "type": "function", "function": { "name": "search_web" } }`
 
 When `debug.tools=true`:
 
@@ -713,7 +712,7 @@ Invoke-RestMethod `
 - Top-level `image_urls` is also supported.
 - Combined image URL limit is 4.
 - `tools` is optional and request-scoped (max 8 per request).
-- `tool_choice` is optional (`auto`, `none`, or specific function).
+- `tool_choice` is optional (`auto` or `none`).
 
 ## Error model
 
