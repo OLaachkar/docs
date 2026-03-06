@@ -50,6 +50,7 @@
           "guides/personality-playbook",
           "guides/visual-identity",
           "guides/ai-engine",
+          "guides/bot-settings-reference",
           "guides/memory-and-knowledge",
           "guides/web-search"
         ]
@@ -72,6 +73,7 @@
         "group": "Deploy and Integrate",
         "pages": [
           "guides/discord",
+          "guides/discord-command-reference",
           "guides/api"
         ]
       },
@@ -86,6 +88,8 @@
         "group": "Billing and Accounts",
         "pages": [
           "guides/credits",
+          "guides/plans-and-limits",
+          "guides/account-and-security",
           "guides/billing-and-refunds"
         ]
       },
@@ -94,7 +98,8 @@
         "pages": [
           "guides/best-practices",
           "guides/troubleshooting",
-          "guides/faq"
+          "guides/faq",
+          "guides/question-bank"
         ]
       }
     ]

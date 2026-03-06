@@ -1,64 +1,146 @@
 ---
 title: "Memory and knowledge"
-description: "Keep your verb consistent over time."
+description: "How context, long-term memory, training examples, and knowledge entries work together."
 ---
 
-## Two kinds of memory
+## Questions this guide answers
 
-- **Short-term context**: the recent messages the model can see.
-- **Long-term memory**: notes or facts you store to keep a consistent world.
+- Why does my verb forget details between messages?
+- What is short-term context vs long-term memory?
+- What should go into knowledge entries vs memory entries?
+- How does URL scraping fill knowledge automatically?
+- How do training examples and keywords influence replies?
 
-## When to add knowledge
+## The four memory layers
 
-Add facts your verb should never forget. Examples:
+### 1. Conversation context (short-term)
 
-- Names and roles in a story world.
-- Rules for a game or community.
-- Preferences you want the verb to remember.
+- Uses recent messages from the active conversation.
+- Controlled by your `Model Context` setting.
+- Higher context improves continuity but costs more tokens.
 
-<Tip>
-  Store the important stuff once, then keep chat prompts short.
-</Tip>
+### 2. Long-term memory
 
-## Keep it clean
+- Manual memory items your verb can keep using over time.
+- Best for durable facts and preferences.
 
-- Review old entries and remove outdated info.
-- Avoid dumping full conversations into memory.
-- Use clear labels and short sentences.
+### 3. Knowledge entries
 
-## Auto memory instructions
+- Structured lore/reference entries (title, category, content, importance).
+- Best for world facts, policies, product facts, and evergreen docs.
 
-Use **Auto-Memory Instructions** to control what Verba saves automatically from chats.
+### 4. Training examples
 
-### Where to set it
+- Input/output examples for style and behavior shaping.
+- Keyword matching can prioritize specific examples when relevant.
 
-1. Open your verb in the dashboard.
-2. Go to **Memory**.
-3. Turn on **Auto Memory**.
-4. Fill in **Auto-Memory Instructions**.
-5. Save changes.
+## Long-term memory limits
 
-### What to write
+Per memory entry:
 
-- Focus on durable details: preferences, relationships, long-term goals, commitments.
-- Exclude short-lived details: timestamps, one-off plans, channel metadata.
-- Never store secrets, private links, passwords, or tokens.
-- Keep memories concise and specific.
+- `content`: up to `2000` chars
+- `context`: up to `500` chars
+- `importance`: `1..10`
 
-### Example instructions
+Auto-memory settings:
 
-```text
-Store durable facts about user preferences, relationships, and commitments.
-Skip temporary details like timestamps or one-off plans.
-Never store secrets, passwords, tokens, or private URLs.
-Write concise memories that are useful in future conversations.
-```
+- `autoMemoryEnabled`: on/off
+- `autoMemoryInstructions`: up to `2000` chars
 
-<Tip>
-  Auto memory is selective. If a conversation does not contain durable
-  information, no new memory may be saved.
-</Tip>
+<Note>
+  Auto-memory is selective, not guaranteed on every turn. The system saves when
+  it detects durable information worth retaining.
+</Note>
 
-<Card title="AI engine" icon="sliders" href="/guides/ai-engine">
-  Increase context only when you need it.
-</Card>
+## Knowledge entry limits
+
+Per entry:
+
+- `title`: up to `100` chars
+- `content`: up to `8000` chars
+- `category`: up to `50` chars
+- `importance`: `1..10`
+
+Per verb:
+
+- Maximum knowledge entries: `50`
+
+## Training data limits
+
+Per example:
+
+- `input`: up to `500` chars
+- `expected`: up to `2000` chars
+- Optional keywords: used for relevance matching
+
+When a user message matches example keywords, those examples are prioritized in
+prompt construction.
+
+## URL scraping into knowledge
+
+The knowledge page can scrape a URL and generate a draft entry.
+
+Expected result:
+
+- `title`
+- `content`
+- `category`
+
+If AI structuring fails, Verba still attempts a basic extraction fallback so you
+can edit and save manually.
+
+## Session memory by surface
+
+| Surface | Memory keying behavior |
+| --- | --- |
+| Public API v1 | Uses `session_id` per caller + character |
+| Discord DM | Scoped to user-DM context |
+| Discord server | Scoped to server context |
+| App group/DM chat | Scoped to group/DM conversation |
+
+## What to store where
+
+### Put this in long-term memory
+
+- Stable personal preferences
+- Ongoing commitments
+- Persistent roleplay relationships
+
+### Put this in knowledge entries
+
+- Product facts and policies
+- Rulebooks
+- Canon lore
+- Documentation snippets you want the bot to cite reliably
+
+### Put this in training examples
+
+- Desired phrasing style
+- Tone and boundary examples
+- Repeated Q/A patterns
+
+## Common mistakes
+
+<AccordionGroup>
+  <Accordion title="Dumping full chats into memory">
+    Store compact facts, not raw transcripts. Long noisy entries reduce retrieval quality.
+  </Accordion>
+  <Accordion title="Using knowledge for temporary plans">
+    Time-sensitive details belong in conversation context, not permanent knowledge.
+  </Accordion>
+  <Accordion title="No keywords in training examples">
+    Add targeted keywords so examples are picked when users ask matching questions.
+  </Accordion>
+  <Accordion title="Oversized auto-memory instructions">
+    Keep instructions strict and concise. Long broad prompts increase noisy memory writes.
+  </Accordion>
+</AccordionGroup>
+
+<CardGroup cols={2}>
+  <Card title="AI Engine Settings" icon="sliders" href="/guides/ai-engine">
+    Tune model context, creativity, and response behavior.
+  </Card>
+  <Card title="Bot Settings Reference" icon="book" href="/guides/bot-settings-reference">
+    Field-by-field guide for all dashboard settings and limits.
+  </Card>
+</CardGroup>
