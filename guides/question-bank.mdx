@@ -13,6 +13,7 @@ answers.
 
 ## Quick high-signal answers
 
+- API flow: create API key -> call `POST /v1/response` -> reuse returned `session_id` for follow-ups.
 - System instructions: set in Dashboard -> Bot -> AI Engine -> Behavior (`systemInstructions`, max `8000` chars).
 - `/v1/response` auth: `Authorization: Bearer vka_...` or `x-api-key: vka_...`.
 - Session memory: reuse `session_id` for follow-up calls.
@@ -21,6 +22,9 @@ answers.
 ## API questions
 
 <AccordionGroup>
+  <Accordion title="How does the API work?">
+    Create an API key, call `POST /v1/response` with `character` + `messages`, then reuse the returned `session_id` to keep conversation memory. Use `stream: true` for SSE on Plus/Pro/Ultra.
+  </Accordion>
   <Accordion title="How do I authenticate requests to api.verba.ink?">
     Send `Authorization: Bearer vka_...` or `x-api-key: vka_...`.
   </Accordion>
@@ -56,6 +60,12 @@ answers.
   </Accordion>
   <Accordion title="Can I use tools/function calls?">
     Yes, request-scoped HTTP tools are supported with validation and limits.
+  </Accordion>
+  <Accordion title="What are /v1/response hard payload limits?">
+    `messages`: max `60`; each message text max `4000` chars; total text max `20000` chars; combined `image_urls` max `4`; `session_id` max `128` chars; tools max `8` definitions and `2` executed calls per request.
+  </Accordion>
+  <Accordion title="How many API keys can I keep active?">
+    Up to `3` active API keys per account.
   </Accordion>
   <Accordion title="Why do I get payload too large errors?">
     Request bodies have size guards; oversized JSON payloads are rejected.

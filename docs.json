@@ -75,6 +75,7 @@
         "pages": [
           "guides/discord",
           "guides/discord-command-reference",
+          "guides/api-how-it-works",
           "guides/api"
         ]
       },

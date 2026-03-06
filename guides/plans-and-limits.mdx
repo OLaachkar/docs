@@ -3,6 +3,15 @@ title: "Plans and limits"
 description: "Complete plan matrix for premium features, usage limits, and API behavior."
 ---
 
+## Premium quick answers
+
+- API access is available on all plans (`/v1/response`, `/v1/image`).
+- Free: `5` verbs, `20` msg/min, `50` context, `4096` max tokens.
+- Plus: `10` verbs, `40` msg/min, `75` context, `8192` max tokens.
+- Pro: `20` verbs, `100` msg/min, `100` context, `16384` max tokens.
+- Ultra: `40` verbs, unlimited msg/min, `150` context, `32768` max tokens.
+- Streaming (`stream: true`) is available on Plus/Pro/Ultra.
+
 ## Plan tiers
 
 Verba currently supports four tiers:
@@ -28,9 +37,13 @@ Quick reference (context/tokens):
 | Message rate limit (per minute) | `20` | `40` | `100` | `Unlimited` |
 | Max model context | `50` | `75` | `100` | `150` |
 | Max response tokens | `4096` | `8192` | `16384` | `32768` |
+| API access (`/v1/response`, `/v1/image`) | Yes | Yes | Yes | Yes |
 | API streaming (`/v1/response` with `stream: true`) | No | Yes | Yes | Yes |
+| Default model tier access | Free | Free + Plus | Free + Plus + Pro | Free + Plus + Pro + Ultra |
 | Watermark removal | No | Yes | Yes | Yes |
 | Advanced AI flag | No | No | Yes | Yes |
+| Early feature access | No | Yes | Yes | Yes |
+| VIP support | No | No | No | Yes |
 | Image generations per month | Unlimited | Unlimited | Unlimited | Unlimited |
 
 <Note>

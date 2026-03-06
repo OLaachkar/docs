@@ -7,6 +7,25 @@ description: "Use API keys to talk to characters outside Discord."
 
 `https://api.verba.ink`
 
+## How the API works (short answer)
+
+1. Create an API key in Dashboard -> Settings -> Security -> API Keys.
+2. Call `POST /v1/response` with `character` + `messages`.
+3. Save the returned `session_id` and reuse it for follow-up requests.
+4. Use `stream: true` for SSE streaming on Plus/Pro/Ultra plans.
+5. Use `POST /v1/image` when you need image generation.
+
+Minimal text request:
+
+```json
+{
+  "character": "mycharacter_abc",
+  "messages": [
+    { "role": "user", "content": "How does the API work?" }
+  ]
+}
+```
+
 ## Fast answers
 
 - Base URL: `https://api.verba.ink`
@@ -15,6 +34,25 @@ description: "Use API keys to talk to characters outside Discord."
 - Auth: `Authorization: Bearer vka_...` or `x-api-key: vka_...`
 - Session memory: reuse `session_id` on later calls to continue context
 - Streaming: `stream: true` on `/v1/response` (Plus/Pro/Ultra)
+- Message count limit: up to `60` items in `messages`
+- Message size limits: each message text up to `4000` chars, total up to `20000` chars
+- Session ID format: optional, max `128` chars, allowed chars `A-Z a-z 0-9 : _ -`
+- Image URL limit: up to `4` combined URLs
+- Tool limits: up to `8` tool definitions, up to `2` executed tool calls per request
+
+## Request limits (fast reference)
+
+| Field | Limit |
+| --- | --- |
+| `messages` length | `60` max |
+| Per-message text | `4000` chars max |
+| Total text across `messages` | `20000` chars max |
+| `session_id` | optional, `128` chars max |
+| `image_urls` (combined) | `4` max |
+| `tools` definitions | `8` max |
+| Executed tool calls | `2` max per request |
+| `/v1/image` prompt | `1500` chars max |
+| `/v1/image` size | only `1024x1024` |
 
 ## Quick start
 
@@ -38,6 +76,12 @@ Send your API key in either header:
 - `x-api-key: vka_...`
 
 If no key is provided, or the key is invalid/revoked, the API returns `401`.
+
+## API key quick facts
+
+- API key prefix is `vka_`.
+- Maximum active keys per account: `3`.
+- Key revocation is immediate.
 
 ## Character identifier
 
