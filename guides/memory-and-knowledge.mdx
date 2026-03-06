@@ -34,6 +34,27 @@ description: "How context, long-term memory, training examples, and knowledge en
 - Input/output examples for style and behavior shaping.
 - Keyword matching can prioritize specific examples when relevant.
 
+## Where system instructions fit
+
+System instructions are not a memory entry type. They are the persistent
+behavior policy prompt for the verb.
+
+Where to configure:
+
+- Dashboard -> Bot -> AI Engine -> Behavior
+- Field: `systemInstructions`
+
+Limit:
+
+- `systemInstructions`: up to `8000` chars
+
+Recommended split of responsibilities:
+
+- System instructions: behavior rules, format constraints, refusal/uncertainty policy
+- Knowledge entries: factual source material and documentation
+- Long-term memory: durable user/world facts
+- Training examples: preferred phrasing and style patterns
+
 ## Long-term memory limits
 
 Per memory entry:

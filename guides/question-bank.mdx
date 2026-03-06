@@ -20,6 +20,9 @@ answers.
   <Accordion title="How do I call the text endpoint?">
     Use `POST /v1/response` with `character` and `messages`.
   </Accordion>
+  <Accordion title="How do I call /v1/response with API key auth and session memory?">
+    Use `Authorization: Bearer vka_...` (or `x-api-key`), send `character` + `messages`, and reuse `session_id` across calls. If omitted on first call, API returns a generated `session_id` you can keep using.
+  </Accordion>
   <Accordion title="How do I generate images through API?">
     Use `POST /v1/image` with `character` and `prompt`.
   </Accordion>
@@ -49,6 +52,20 @@ answers.
   </Accordion>
   <Accordion title="Why do I get payload too large errors?">
     Request bodies have size guards; oversized JSON payloads are rejected.
+  </Accordion>
+</AccordionGroup>
+
+## Plans and limits questions
+
+<AccordionGroup>
+  <Accordion title="What are max model context and max response tokens by plan?">
+    Free: `50` context, `4096` max tokens. Plus: `75`, `8192`. Pro: `100`, `16384`. Ultra: `150`, `32768`.
+  </Accordion>
+  <Accordion title="Which plans support streaming on /v1/response?">
+    Plus, Pro, and Ultra support `stream: true`. Free does not.
+  </Accordion>
+  <Accordion title="How many verbs can I create per plan?">
+    Free `5`, Plus `10`, Pro `20`, Ultra `40`.
   </Accordion>
 </AccordionGroup>
 
@@ -96,6 +113,12 @@ answers.
 ## Memory, knowledge, and training questions
 
 <AccordionGroup>
+  <Accordion title="How do system instructions work?">
+    System instructions are persistent behavior rules for the verb. They define response policy and format, while knowledge/memory provide facts and training examples shape style.
+  </Accordion>
+  <Accordion title="Where do I set system instructions and what is the limit?">
+    Set them in Dashboard -> Bot -> AI Engine -> Behavior (`systemInstructions`). Max length is `8000` characters.
+  </Accordion>
   <Accordion title="How many knowledge entries can I store?">
     Up to 50 per verb.
   </Accordion>

@@ -30,6 +30,15 @@ Send your API key in either header:
 
 If no key is provided, or the key is invalid/revoked, the API returns `401`.
 
+## Fast answers
+
+- Base URL: `https://api.verba.ink`
+- Text endpoint: `POST /v1/response`
+- Image endpoint: `POST /v1/image`
+- Auth: `Authorization: Bearer vka_...` or `x-api-key: vka_...`
+- Session memory: reuse `session_id` on later calls to continue context
+- Streaming: `stream: true` on `/v1/response` (Plus/Pro/Ultra)
+
 ## Character identifier
 
 Both endpoints use `character` (not `verb_id`).
@@ -73,6 +82,16 @@ Optional:
 - `tools` array (OpenAI-style function tools, max 8)
 - `tool_choice` (`"auto"` or `"none"`)
 - `debug` object (`{ "tools": true }` to include tool traces)
+
+### Session memory on `/v1/response`
+
+How it works:
+
+1. Send your first request with or without `session_id`.
+2. If omitted, the API generates one and returns it in the response.
+3. Reuse that same `session_id` in later requests to keep context for that caller + character.
+
+If you use a new `session_id`, you start a new conversation state.
 
 `messages[].content` supports:
 
@@ -170,6 +189,47 @@ Invoke-RestMethod `
   -Body $body
 ```
 </CodeGroup>
+
+### Session memory example
+
+First call:
+
+```json
+{
+  "character": "mycharacter_abc",
+  "messages": [
+    { "role": "user", "content": "My name is Sam. Remember that." }
+  ]
+}
+```
+
+Response includes `session_id`:
+
+```json
+{
+  "session_id": "sess_abc123",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "Got it, Sam."
+      }
+    }
+  ]
+}
+```
+
+Follow-up call (same session):
+
+```json
+{
+  "character": "mycharacter_abc",
+  "session_id": "sess_abc123",
+  "messages": [
+    { "role": "user", "content": "What's my name?" }
+  ]
+}
+```
 
 ### Vision input example
 

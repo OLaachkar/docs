@@ -21,6 +21,33 @@ description: "Tune model behavior, response length, context, and search."
 | Multi-message | on/off + delay | Sends split follow-up replies |
 | Web search | on/off | Allows live web-grounded replies |
 
+## System instructions (behavior prompt)
+
+System instructions are your verb's persistent behavior rules.
+
+Where to set:
+
+- Dashboard -> Bot -> AI Engine -> Behavior
+- Field name: `systemInstructions`
+
+Limit:
+
+- Up to `8000` characters
+
+How they interact with other layers:
+
+- `systemInstructions`: behavior/rules/tone constraints
+- Training examples: style shaping and response pattern hints
+- Long-term memory: durable facts/preferences
+- Knowledge entries: factual/reference content
+- Conversation context: recent turns in current chat/thread/session
+
+Practical rule:
+
+- Put "how to behave" in system instructions.
+- Put "facts to remember" in knowledge/memory.
+- Put "how to phrase outputs" in training examples.
+
 ## Plan-based limits
 
 Current default limits:
@@ -90,6 +117,7 @@ Keep it off for:
 - Avoid contradictory rules.
 - Prefer short imperative bullets over long prose.
 - Include failure policy (what to do when unknown).
+- Specify output format explicitly (headings, bullets, steps, code blocks).
 
 ## Quick diagnostics
 
