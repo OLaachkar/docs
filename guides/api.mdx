@@ -7,6 +7,15 @@ description: "Use API keys to talk to characters outside Discord."
 
 `https://api.verba.ink`
 
+## Fast answers
+
+- Base URL: `https://api.verba.ink`
+- Text endpoint: `POST /v1/response`
+- Image endpoint: `POST /v1/image`
+- Auth: `Authorization: Bearer vka_...` or `x-api-key: vka_...`
+- Session memory: reuse `session_id` on later calls to continue context
+- Streaming: `stream: true` on `/v1/response` (Plus/Pro/Ultra)
+
 ## Quick start
 
 <Steps>
@@ -29,15 +38,6 @@ Send your API key in either header:
 - `x-api-key: vka_...`
 
 If no key is provided, or the key is invalid/revoked, the API returns `401`.
-
-## Fast answers
-
-- Base URL: `https://api.verba.ink`
-- Text endpoint: `POST /v1/response`
-- Image endpoint: `POST /v1/image`
-- Auth: `Authorization: Bearer vka_...` or `x-api-key: vka_...`
-- Session memory: reuse `session_id` on later calls to continue context
-- Streaming: `stream: true` on `/v1/response` (Plus/Pro/Ultra)
 
 ## Character identifier
 

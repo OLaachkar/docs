@@ -11,6 +11,13 @@ backend and frontend codepaths.
 Use it when users ask operational questions and you need fast, practical
 answers.
 
+## Quick high-signal answers
+
+- System instructions: set in Dashboard -> Bot -> AI Engine -> Behavior (`systemInstructions`, max `8000` chars).
+- `/v1/response` auth: `Authorization: Bearer vka_...` or `x-api-key: vka_...`.
+- Session memory: reuse `session_id` for follow-up calls.
+- Plan limits (context/tokens): Free `50/4096`, Plus `75/8192`, Pro `100/16384`, Ultra `150/32768`.
+
 ## API questions
 
 <AccordionGroup>

@@ -7,6 +7,12 @@ description: "How system instructions work, where to set them, limits, and how t
 
 System instructions are the verb's persistent behavior rules.
 
+Quick facts:
+
+- Set in Dashboard -> Bot -> AI Engine -> Behavior
+- Field name: `systemInstructions`
+- Limit: `8000` characters
+
 They should define:
 
 - how the verb should behave
@@ -15,15 +21,6 @@ They should define:
 - boundaries and refusal style
 
 They should not be used as a dump for raw documentation or long transcripts.
-
-## Where to set them
-
-- Dashboard -> Bot -> AI Engine -> Behavior
-- Field: `systemInstructions`
-
-## Limit
-
-- `systemInstructions`: up to `8000` characters
 
 ## Interaction with other configuration layers
 
