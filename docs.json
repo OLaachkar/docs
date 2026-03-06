@@ -90,6 +90,7 @@
         "group": "Billing and Accounts",
         "pages": [
           "guides/credits",
+          "guides/plans-quick-reference",
           "guides/plans-and-limits",
           "guides/account-and-security",
           "guides/billing-and-refunds"
