@@ -18,6 +18,7 @@ answers.
 - `/v1/response` auth: `Authorization: Bearer vka_...` or `x-api-key: vka_...`.
 - Session memory: reuse `session_id` for follow-up calls.
 - Plan limits (context/tokens): Free `50/4096`, Plus `75/8192`, Pro `100/16384`, Ultra `150/32768`.
+- Plan full matrix (`verbs/msg-min/context/max-tokens`): Free `5/20/50/4096`, Plus `10/40/75/8192`, Pro `20/100/100/16384`, Ultra `40/unlimited/150/32768`.
 
 ## API questions
 
@@ -75,6 +76,9 @@ answers.
 ## Plans and limits questions
 
 <AccordionGroup>
+  <Accordion title="What are Free/Plus/Pro/Ultra limits for context, max tokens, verbs, and message rate?">
+    Free `5/20/50/4096`, Plus `10/40/75/8192`, Pro `20/100/100/16384`, Ultra `40/unlimited/150/32768` (format: verbs/msg-min/context/max-tokens).
+  </Accordion>
   <Accordion title="What are max model context and max response tokens by plan?">
     Free: `50` context, `4096` max tokens. Plus: `75`, `8192`. Pro: `100`, `16384`. Ultra: `150`, `32768`.
   </Accordion>
