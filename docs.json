@@ -2,6 +2,17 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "Verba Documentation",
+  "fonts": {
+    "family": "Space Grotesk",
+    "heading": {
+      "family": "Space Grotesk",
+      "weight": 700
+    },
+    "body": {
+      "family": "Space Grotesk",
+      "weight": 400
+    }
+  },
   "colors": {
     "primary": "#2563EB",
     "light": "#60A5FA",
