@@ -20,6 +20,10 @@ description: "Fix common Verba issues fast with concrete checks and recovery ste
   <Accordion title="The application did not respond">
     This usually means command timeout, missing channel permission, or a disabled slash command. Check command toggles and bot permissions in that server/channel.
   </Accordion>
+  <Accordion title="/vc-join or /vc-leave looks locked in dashboard">
+    Those voice channel commands are currently `Ultra` features. Normal Discord
+    activity/presence editing is still available on all plans.
+  </Accordion>
   <Accordion title="Bot only responds sometimes">
     In servers, bot response depends on routing: mention, AI channel, or keyword match. If none of those apply, no response is expected.
   </Accordion>
@@ -76,6 +80,12 @@ description: "Fix common Verba issues fast with concrete checks and recovery ste
   </Accordion>
   <Accordion title="API key works in dashboard but fails in API calls">
     Check header format (`Authorization: Bearer vka_...` or `x-api-key`), key revocation status, and whether you exceeded active key limits.
+  </Accordion>
+  <Accordion title="I got temporarily IP banned">
+    Verba can temporarily block repeated request bursts or repeated blocked
+    traffic. Stop retry loops, wait for the temp-ban window to expire, and send
+    support the timestamp, your public IP if known, and the page/action that
+    triggered it.
   </Accordion>
 </AccordionGroup>
 

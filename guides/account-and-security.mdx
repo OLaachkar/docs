@@ -70,6 +70,26 @@ Use one of:
 - `Authorization: Bearer vka_...`
 - `x-api-key: vka_...`
 
+<Note>
+  API keys are only shown in full once when you create them. Verba stores the
+  verification form of API keys, not a reusable plaintext copy.
+</Note>
+
+## How Verba stores sensitive data
+
+Verba applies extra protection to sensitive secrets before they are written to
+storage.
+
+Examples include:
+
+- 2FA secrets
+- 2FA backup codes
+- Connected-service access/refresh tokens
+- Bot/service tokens that must be reused later by the platform
+
+This means raw database access alone should not expose those values in their
+original usable form.
+
 ## Connected services
 
 ### Patreon linking
@@ -80,6 +100,26 @@ Use one of:
 ### Patreon disconnect guard
 
 Disconnect may be blocked while an active Patreon subscription is still attached.
+
+## Abuse protection and temporary IP bans
+
+Verba uses both edge-level and backend abuse protection to prevent request
+bursts, scraping loops, and automated flooding.
+
+If an IP repeatedly trips those protections, Verba can place it into a temporary
+ban ladder:
+
+- First backend abuse hit: about `30 minutes`
+- Repeated edge escalation: about `24 hours`
+- Repeated repeat offender promotion: up to `30 days`
+
+If you hit a temporary ban unexpectedly during normal use, stop rapid retries,
+wait for the window to expire, and contact support with:
+
+- Exact timestamp
+- Your public IP if known
+- The page or action you were using
+- A screenshot or error message
 
 ## Profile asset uploads
 

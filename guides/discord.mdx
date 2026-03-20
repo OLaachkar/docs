@@ -41,6 +41,12 @@ You need:
   </Step>
 </Steps>
 
+<Note>
+  Connected Discord bot tokens are protected in storage after connection. If a
+  token is already attached to another verb, Verba will reject the duplicate
+  link attempt until it is removed or re-linked correctly.
+</Note>
+
 ## How response routing works
 
 In server channels, a connected verb responds when at least one condition is true:
@@ -85,12 +91,18 @@ Default command set:
 
 You can enable/disable each command in Discord module settings.
 
+<Note>
+  In the current release, Discord activity/presence editing is available on all
+  plans. The voice channel join/leave commands are reserved for `Ultra`.
+</Note>
+
 ## Permissions behavior
 
 - `/activate-channel` and `/remove-channel` require Administrator permission.
 - `/reset` in server requires Administrator, server owner, or bot owner.
 - `/reset` in DM is user-scoped and available without server permissions.
-- Voice commands require Voice Engine enabled for the verb.
+- Voice commands require Voice Engine enabled for the verb, and `/vc-join` plus
+  `/vc-leave` are Ultra-only in the current dashboard release.
 
 ## Profile and presence settings
 

@@ -18,6 +18,11 @@ Verba can register these slash commands:
 
 Each command can be toggled on/off in your Discord module settings.
 
+<Note>
+  Discord activity and presence editing are not plan-locked. The current
+  plan-gated Discord controls are the voice channel join/leave commands.
+</Note>
+
 ## Permission matrix
 
 | Command | Where | Permission requirement |
@@ -28,8 +33,8 @@ Each command can be toggled on/off in your Discord module settings.
 | `/reset` | Server | Administrator, server owner, or bot owner |
 | `/generate` | Server/DM | Command enabled + image generation enabled |
 | `/dashboard` | Server/DM | Command enabled |
-| `/vc-join` | Server | Voice engine enabled + voice channel access |
-| `/vc-leave` | Server | Voice engine enabled |
+| `/vc-join` | Server | `Ultra` plan + voice engine enabled + voice channel access |
+| `/vc-leave` | Server | `Ultra` plan + voice engine enabled |
 | `/ping` | Server/DM | Command enabled |
 
 ## Command behavior details
@@ -62,10 +67,12 @@ Each command can be toggled on/off in your Discord module settings.
 
 - Joins the requester's voice channel (or selected voice channel parameter).
 - Fails if bot lacks voice permissions or voice runtime dependencies.
+- Available on the `Ultra` plan in the current release.
 
 ### `/vc-leave`
 
 - Leaves current voice channel if connected.
+- Available on the `Ultra` plan in the current release.
 
 ### `/ping`
 
