@@ -8,6 +8,8 @@ description: "Connect a verb to Discord and configure how, where, and when it re
 - Why does my bot show "connection failed"?
 - Why does the bot ignore messages in some channels?
 - How do mention mode and AI-channel mode differ?
+- How do Discord expression controls affect emoji, GIF, sticker, and poll behavior?
+- How do I make bots talk to each other?
 - Why does `/reset` work in DMs but fail in servers?
 - Why does the bot say "application did not respond"?
 
@@ -54,13 +56,48 @@ In server channels, a connected verb responds when at least one condition is tru
 - The verb is directly mentioned
 - The channel is marked as an AI channel
 - A training keyword match is detected
+- The bot is continuing an already-active bot-to-bot/autonomous exchange in that
+  same channel
 
 It does not respond when:
 
-- Another bot is speaking (bot messages are ignored)
 - Message includes `@everyone`/`@here`
 - Message role-pings the bot's role directly
 - User is on ignore/ban controls
+
+Most unrelated bot messages are ignored. Bot-to-bot replies only continue when
+the conversation is already active in that channel.
+
+## Discord-native behavior
+
+Recent Discord behavior is more native than basic text replies:
+
+- Bots can prefer current-server custom emoji in replies and reactions
+- If Discord allows external emoji in that channel, bots can also use custom
+  emoji from other guilds they are in
+- Bots can post server stickers when the moment fits
+- Bots can send Tenor GIF follow-ups
+- Bots can understand Discord polls, react to vote activity, and start native
+  Discord polls when the situation fits
+- Bots can split lively replies into several short messages instead of always
+  sending one block
+
+## Discord Expression Controls
+
+The Discord module now includes a dedicated **Discord Expression Controls**
+panel.
+
+Current controls:
+
+- Emoji Reactions
+- GIF Follow-ups
+- Server Stickers
+- Custom Emojis
+- Poll Creation
+- Multi-Message Replies
+
+All of these are enabled by default for new bots. They only affect
+Discord-facing behavior and do not change API or website chat behavior.
 
 ## Mention mode vs AI-channel mode
 
@@ -75,6 +112,26 @@ It does not respond when:
 - Best for support/help channels or dedicated AI rooms
 
 Use `/remove-channel` to disable AI-channel behavior.
+
+## Autonomous and bot-to-bot behavior
+
+When autonomous mode is enabled, Discord bots can:
+
+- Chime into active conversations without a direct mention
+- Reply to other bots in the same channel instead of only replying to humans
+- React to messages and poll activity more naturally
+
+Best results come from either:
+
+- Enabling autonomous mode on both bots, or
+- Mentioning both bots in the same channel to start the exchange
+
+Autonomous frequency options are:
+
+- `Human`
+- `Default`
+- `Active`
+- `Chaotic`
 
 ## Slash commands available
 
@@ -95,6 +152,24 @@ You can enable/disable each command in Discord module settings.
   In the current release, Discord activity/presence editing is available on all
   plans. The voice channel join/leave commands are reserved for `Ultra`.
 </Note>
+
+## Voice join without slash commands
+
+Ultra verbs do not need `/vc-join` every time. If the bot is mentioned in a
+server and the message is clearly asking it to join VC/call, it can use the
+same voice-join path from normal chat.
+
+## Channel awareness
+
+Discord replies are not blind to the room anymore.
+
+- The bot gets the exact current channel as prompt context
+- In servers, it only sees the channels it currently has permission to view
+- Immediate recent conversation from the same channel is prioritized over older
+  saved history
+
+This helps replies, reactions, stickers, GIFs, and polls fit the current room
+instead of sounding detached from the channel.
 
 ## Permissions behavior
 
@@ -134,6 +209,16 @@ In the Discord module you can:
   </Accordion>
   <Accordion title="The application did not respond">
     Most often command timeout or missing Discord permissions in that channel. Check command toggle, channel permissions, and voice/image settings for the invoked command.
+  </Accordion>
+  <Accordion title="Bot won't create a poll">
+    Poll Creation must be enabled in Discord Expression Controls, and the bot
+    also needs Discord's native poll permission in that channel. If the channel
+    does not allow polls, the bot falls back to normal text instead.
+  </Accordion>
+  <Accordion title="Bot keeps using plain emoji instead of server emoji">
+    Turn on Custom Emojis in Discord Expression Controls and make sure the bot
+    is allowed to use server or external emojis in that channel. When enabled,
+    Verba prefers fitting custom emojis over plain Unicode.
   </Accordion>
   <Accordion title="Bot is online but does not answer messages">
     Check whether the message was a mention, in an AI channel, or matched training keywords. Also verify intents and that the sender is not ignored/banned.

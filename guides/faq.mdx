@@ -39,6 +39,23 @@ description: "High-frequency questions across API, Discord, memory, billing, and
   <Accordion title="How do I stop auto replies in a channel?">
     Use `/remove-channel`.
   </Accordion>
+  <Accordion title="Can bots talk to each other?">
+    Yes. The cleanest setup is to mention both bots in the same channel or
+    enable autonomous mode on both so they can keep the exchange going.
+  </Accordion>
+  <Accordion title="Can bots use server emojis, stickers, GIFs, and polls?">
+    Yes, through Discord Expression Controls. Those controls are enabled by
+    default, but Discord permissions in that channel still matter.
+  </Accordion>
+  <Accordion title="Why did the bot send text instead of making a poll?">
+    The bot can only create native Discord polls in channels where it has poll
+    permission. If polls are disabled or the channel blocks them, it falls back
+    to a normal text reply.
+  </Accordion>
+  <Accordion title="Do I need /vc-join every time?">
+    No. Ultra bots can also join voice chat from a clear normal message asking
+    them to join VC/call.
+  </Accordion>
   <Accordion title="Why does /reset fail in server?">
     Server reset requires admin/server-owner/bot-owner permission.
   </Accordion>

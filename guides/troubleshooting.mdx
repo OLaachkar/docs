@@ -27,6 +27,22 @@ description: "Fix common Verba issues fast with concrete checks and recovery ste
   <Accordion title="Bot only responds sometimes">
     In servers, bot response depends on routing: mention, AI channel, or keyword match. If none of those apply, no response is expected.
   </Accordion>
+  <Accordion title="Bot won't create a poll">
+    Poll Creation must be enabled in Discord Expression Controls, and the bot
+    must have Discord's native poll permission in that specific channel.
+    Without that permission, Verba falls back to normal text.
+  </Accordion>
+  <Accordion title="Bot uses plain emoji instead of server emoji">
+    Turn on Custom Emojis in Discord Expression Controls and verify the bot can
+    use server or external emojis in that channel. When enabled, Verba prefers
+    fitting custom emojis over plain Unicode.
+  </Accordion>
+  <Accordion title="Bots are not talking to each other">
+    Put both bots in the same channel and either mention both to start the
+    exchange or enable autonomous mode on both. Bot-to-bot replies are
+    channel-scoped, so starting them in one channel does not make them continue
+    everywhere else in the server.
+  </Accordion>
   <Accordion title="Bot replies in wrong places or too often">
     Remove AI channels with `/remove-channel` and keep mention-only behavior in shared channels.
   </Accordion>
@@ -92,6 +108,11 @@ description: "Fix common Verba issues fast with concrete checks and recovery ste
 ## Chat and group issues
 
 <AccordionGroup>
+  <Accordion title="Create verb fails with 'Request body too large'">
+    The create flow sends avatar/banner images inline inside the request body.
+    Keep inline avatar and banner files at `1MB` or smaller each, or create the
+    verb first and upload profile images afterward.
+  </Accordion>
   <Accordion title="Message send blocked">
     Anti-spam protections can block mention floods and invisible-character abuse. Remove unusual hidden characters and retry.
   </Accordion>
@@ -100,6 +121,11 @@ description: "Fix common Verba issues fast with concrete checks and recovery ste
   </Accordion>
   <Accordion title="Group invite problems">
     Verify invite code freshness and that owner has not regenerated it recently.
+  </Accordion>
+  <Accordion title="Autonomous DMs are too frequent">
+    Lower autonomous frequency or disable autonomous mode on that verb. Verba
+    now stops repeated follow-up loops on the same silent DM thread, but a bot
+    that is intentionally configured to be active can still message on its own.
   </Accordion>
 </AccordionGroup>
 

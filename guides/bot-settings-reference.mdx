@@ -35,6 +35,14 @@ Use it when you need exact ranges, limits, and behavior implications.
 | --- | --- | --- |
 | `systemInstructions` | `8000` chars | Extra behavior control |
 | `autonomousMode` | boolean | Enables autonomous behavior paths where supported |
+| `autonomousFrequency` | `human`, `default`, `active`, `chaotic` | Tunes how often autonomous mode speaks without a direct prompt |
+
+Autonomous frequency intent:
+
+- `human`: calmer, more natural timing
+- `default`: occasional low-key chime-ins
+- `active`: joins more often without turning everything into spam
+- `chaotic`: loosest filter, most willing to stir up banter
 
 ## Training settings
 
@@ -104,14 +112,39 @@ Main controls:
 
 - Connect/disconnect bot token
 - Status/presence profile
+- Discord Expression Controls
 - Slash command toggles
 - AI channel management
 - Server list/leave server tools
+
+Discord Expression Controls:
+
+- `discordEmojiReactionsEnabled`
+- `discordGifResponsesEnabled`
+- `discordStickerResponsesEnabled`
+- `discordCustomEmojisEnabled`
+- `discordPollsEnabled`
+- `multiMessageEnabled` (also used by non-Discord split replies)
+
+Current defaults:
+
+- Emoji reactions: on
+- GIF follow-ups: on
+- Server stickers: on
+- Custom emojis: on
+- Poll creation: on
+- Multi-message replies: on
 
 Core profile defaults include:
 
 - Presence values: `online`, `idle`, `dnd`, `offline`
 - Default status text behavior if unset
+
+Conversation scope notes:
+
+- Discord DM text history is scoped to that user DM with the bot
+- Discord server text history is scoped to the current channel, not the whole guild
+- Discord voice chat uses the active connected voice session/channel context
 
 ## Custom messages settings
 

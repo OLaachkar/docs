@@ -8,6 +8,9 @@ description: "Give your verb a voice that fits the vibe."
 Voice is optional and can be enabled per verb. Start with text only, then add
 voice once the personality feels right.
 
+If you want voice on every eligible reply, set voice response frequency to
+`100`. Lower values make voice replies intermittent on purpose.
+
 ## Voice cloning
 
 Upload a short, clean sample to create a custom voice. The best results come
@@ -44,6 +47,33 @@ upgrade prompt with the number of additional premium voice models available on a
 higher plan.
 
 That count is dynamic and can change as the voice catalog changes.
+
+## Discord voice chat
+
+On Discord, Ultra verbs can join voice chat with `/vc-join`, and they can also
+join from a normal mention request such as asking the bot to join VC/call in
+server chat.
+
+When the live voice path is healthy, the bot can:
+
+- Listen in the connected voice channel
+- Transcribe incoming speech
+- Generate a reply
+- Speak the reply back into VC
+
+Voice-channel replies now depend on the live voice pipeline, so if VC is silent
+you should verify:
+
+- Voice Engine is enabled for the verb
+- The selected voice model is available to that plan
+- The bot can access and speak in the target voice channel
+- The active speech provider is healthy and has available quota
+
+<Note>
+  If the selected live speech provider is unavailable or out of quota, Discord
+  VC can join successfully but still fail to transcribe or speak until that
+  provider becomes available again.
+</Note>
 
 ## Keep it natural
 

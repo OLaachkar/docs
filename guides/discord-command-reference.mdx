@@ -51,7 +51,8 @@ Each command can be toggled on/off in your Discord module settings.
 ### `/reset`
 
 - In DM: clears DM conversation memory for that user context.
-- In server: clears server conversation memory for that bot/server context.
+- In server: clears the current bot/server/channel conversation context, not
+  every channel in the guild.
 
 ### `/generate`
 
@@ -69,6 +70,13 @@ Each command can be toggled on/off in your Discord module settings.
 - Fails if bot lacks voice permissions or voice runtime dependencies.
 - Available on the `Ultra` plan in the current release.
 
+### Natural-language voice join
+
+- Ultra bots can also join from a normal mention message when the message is
+  clearly asking them to join VC/call.
+- This uses the same join rules as `/vc-join`; plan, permissions, and channel
+  access still apply.
+
 ### `/vc-leave`
 
 - Leaves current voice channel if connected.
@@ -84,6 +92,10 @@ When a command is disabled in dashboard:
 
 - Invocation returns a disabled-command response.
 - Command registration may take a short delay to reflect in Discord command picker.
+
+Slash command toggles are separate from **Discord Expression Controls**. Turning
+off a slash command does not disable reactions, GIFs, stickers, custom emojis,
+polls, or multi-message Discord replies.
 
 ## Common command errors
 
