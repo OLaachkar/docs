@@ -85,6 +85,7 @@
         "group": "Deploy and Integrate",
         "pages": [
           "guides/discord",
+          "guides/custom-builder",
           "guides/discord-command-reference",
           "guides/api-how-it-works",
           "guides/api"

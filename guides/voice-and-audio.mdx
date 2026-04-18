@@ -11,6 +11,21 @@ voice once the personality feels right.
 If you want voice on every eligible reply, set voice response frequency to
 `100`. Lower values make voice replies intermittent on purpose.
 
+## Voice attachment visual
+
+The Voice Engine settings also include a **Voice Attachment Visual** section.
+
+You can upload a custom still image for voice message videos instead of using
+the default Verba image.
+
+- The live preview uses the same `20:7` crop as the final voice attachment
+- The generated video output is framed to `400x140`
+- You can replace or remove the image at any time
+- If no custom image is uploaded, Verba falls back to the default voice banner
+
+For best results, use a wide banner-style image with the subject centered,
+because tall portraits will be cropped heavily in the final attachment.
+
 ## Voice cloning
 
 Upload a short, clean sample to create a custom voice. The best results come
@@ -53,6 +68,10 @@ That count is dynamic and can change as the voice catalog changes.
 On Discord, Ultra verbs can join voice chat with `/vc-join`, and they can also
 join from a normal mention request such as asking the bot to join VC/call in
 server chat.
+
+Lower-tier verbs can still keep those commands enabled, but they respond with
+an in-character upgrade message instead of joining live VC. Normal generated
+voice messages stay free.
 
 When the live voice path is healthy, the bot can:
 

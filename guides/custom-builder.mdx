@@ -1,0 +1,448 @@
+---
+title: "Discord custom builder"
+description: "Build slash commands, events, timed automations, webhooks, tickets, modmail, and message flows with Verba's Discord builder."
+---
+
+## What the custom builder is
+
+The **Discord Custom Builder** is Verba's no-code Discord workflow builder for:
+
+- Slash commands
+- Interaction events like buttons, selects, and modals
+- Timed automations
+- Webhook-driven flows
+- Variables and reusable message templates
+- Ticketing, modmail, welcome flows, and other Discord automations
+
+It is designed for people who want BotGhost-style bot building inside Verba, but tied directly to their connected Verba Discord bot.
+
+## What you can build right now
+
+Current practical use cases:
+
+- Ticket systems
+- Thread-based modmail systems
+- Welcome messages
+- Reaction and button flows
+- Channel and thread automations
+- Role and moderation automations
+- Logging and transcript flows
+- Webhook intake flows
+- Status and utility commands
+
+Examples that are realistic with the current runtime:
+
+- `Open Ticket` button -> create ticket channel -> post intro -> log it
+- `Open Modmail` button -> create support thread -> escalate to case channel -> close with transcript
+- `guild_member_add` event -> send welcome message into a configured channel
+- Webhook POST -> create thread -> post intake details -> notify staff
+
+## Builder project types
+
+Every builder project is one of these:
+
+- `Command`
+- `Event`
+- `Timed Event`
+
+### Commands
+
+Use command projects for slash commands like:
+
+- `/ticket-panel`
+- `/modmail-panel`
+- `/rank`
+- `/apply`
+
+Command roots support:
+
+- Chat input commands
+- Guild/server-only commands
+- DM/all-context command targets
+- Command options like text, number, user, channel, role, boolean, attachment
+
+### Events
+
+Use event projects for Discord and builder-driven triggers like:
+
+- `guild_member_add`
+- `message_create`
+- `message_reaction_add`
+- `interaction_button`
+- `interaction_select_menu`
+- `interaction_modal_submit`
+- `webhook_receive`
+
+Best practice:
+
+- Keep one event project focused on one job
+- For advanced systems, use multiple event projects with the same trigger
+- Example: duplicate guard project + open project + close project
+
+### Timed Events
+
+Use timed events for:
+
+- Intervals
+- Daily automations
+- Weekly automations
+- One-time scheduled runs
+
+Examples:
+
+- Sticky message refresh
+- Scheduled announcements
+- Daily reminders
+- Cleanup jobs
+
+## How saving works
+
+The builder is **manual save**, not autosave.
+
+That means:
+
+- Changes on the canvas are local until you press save
+- The bot uses the **last saved** version
+- Unsaved edits do not go live
+
+This is intentional so you can experiment without publishing partial logic.
+
+## Core builder building blocks
+
+The current builder supports three major block families:
+
+- `Options`
+- `Actions`
+- `Conditions`
+
+### Options
+
+Options define slash command inputs:
+
+- Text
+- Number
+- User
+- Channel
+- Role
+- Choice / boolean
+- Attachment
+
+### Actions
+
+Important action categories currently available:
+
+- Advanced Message
+- Message Actions
+- Custom Variable Actions
+- HTTP / Webhooks
+- Loop Actions
+- Other Actions
+- Voice Actions
+- Role Actions
+- Channel Actions
+- Thread and Forum Actions
+- Server Actions
+
+Examples:
+
+- `Send or Edit a Message`
+- `Set Variable`
+- `Send an API Request`
+- `Create a Channel`
+- `Find a Channel`
+- `Create a Thread`
+- `Delete a Thread`
+- `Create Transcript`
+- `Add Roles`
+- `Create Server Invite`
+
+### Conditions
+
+Current condition blocks include:
+
+- `Comparison Condition`
+- `Chance Condition`
+- `Permissions Condition`
+- `Role Condition`
+- `Channel Condition`
+- `Channel Exists`
+- `User Condition`
+- `Premium Check`
+- `Switch`
+- `For Each`
+
+## Message builder
+
+The message builder is used by message blocks like **Send or Edit a Message**.
+
+It supports:
+
+- Main message content
+- Up to 10 embeds
+- Embed title, description, author, footer, images, thumbnail
+- Embed fields
+- Buttons
+- Saved message templates
+- Live Discord-style preview
+
+Use message templates when:
+
+- The same panel should be reused in multiple projects
+- You want one place to update a ticket/modmail panel
+- You want consistent intros, logs, or prompts
+
+## Variables
+
+There are two kinds of values in the builder:
+
+- **Custom variables** you define
+- **Built-in runtime variables** the builder exposes automatically
+
+### Custom variables
+
+Custom variables can be scoped as:
+
+- `global`
+- `server`
+- `channel`
+- `user`
+
+Examples:
+
+- `VAR_modmail_hub_channel_id`
+- `VAR_ticket_log_channel_id`
+- `VAR_sticky_last_message_id`
+
+### Built-in runtime variables
+
+Built-in values are available automatically and do not need to be created in Data Storage.
+
+Common examples:
+
+- `{user}`
+- `{user_name}`
+- `{user_displayName}`
+- `{user_id}`
+- `{user_tag}`
+- `{server}`
+- `{server_id}`
+- `{channel}`
+- `{current_channel_id}`
+- `{current_channel_name}`
+- `{message_id}`
+- `{interaction_custom_id}`
+- `{button_custom_id}`
+- `{select_values}`
+- `{DEFAULT_SERVER}`
+- `{last_bot_message_id}`
+- `{created_channel_id}`
+- `{created_thread_id}`
+- `{created_role_id}`
+- `{invite_url}`
+
+### Channel lookup built-ins
+
+When using `Find a Channel` or `Channel Exists`, these become available:
+
+- `{channel_exists}`
+- `{last_found_channel_id}`
+- `{last_found_channel_name}`
+- `{last_found_channel_mention}`
+
+These are especially useful for:
+
+- Duplicate ticket prevention
+- Duplicate modmail prevention
+- Existing case-channel checks
+
+## Webhooks and HTTP requests
+
+The builder supports two related capabilities:
+
+- outbound HTTP requests
+- inbound webhook events
+
+### Outbound HTTP requests
+
+The **Send an API Request** block goes through Verba's backend proxy layer.
+
+That means:
+
+- The bot/browser is not making the request directly
+- Your frontend users are not exposing your backend IP through the builder UI
+- Response values are returned to the builder runtime
+
+Useful runtime values after a request:
+
+- `{http_status}`
+- `{http_body}`
+- `{http_json}`
+
+### Incoming webhook events
+
+Use the `webhook_receive` event type for inbound automation.
+
+A webhook event project can define:
+
+- `webhookPath`
+- `webhookSecret`
+- `defaultServerId`
+
+Webhook secrets can be provided as:
+
+- `x-verba-builder-secret`
+- `x-builder-secret`
+- `Authorization: Bearer <secret>`
+
+Webhook runtime values include:
+
+- `{webhook_method}`
+- `{webhook_path}`
+- `{webhook_headers_json}`
+- `{webhook_query_json}`
+- `{webhook_body_json}`
+- `{webhook_raw_body}`
+- `{webhook_secret_valid}`
+
+## Builder patterns that work well
+
+The builder runtime is strongest when you structure flows as small focused projects.
+
+### Good pattern: split advanced logic into multiple projects
+
+For a ticket or modmail system, use:
+
+- one command project to post the panel
+- one event project as duplicate guard
+- one event project to open the ticket/thread
+- one event project to close it
+- one event project to escalate or hand off
+
+This is cleaner and matches how the current runtime executes best.
+
+### Example: advanced modmail
+
+A working thread-based modmail system typically looks like:
+
+1. `/modmail-panel` command posts a panel
+2. `interaction_button` with `modmail_open`
+3. duplicate guard checks whether `modmail-{user_id}` already exists
+4. open flow creates a thread in the configured hub channel
+5. intro message posts buttons for close or escalation
+6. escalation creates a dedicated case channel
+7. close flow creates transcript -> logs -> deletes thread/channel
+8. webhook flow can create a new modmail thread from external intake
+
+## Starter systems
+
+The builder includes starter systems so users do not have to begin from an empty canvas.
+
+Current starter systems include:
+
+- Advanced Ticketing
+- Welcome System
+- Leveling System
+
+These are intended as starting points you can customize, not fixed templates.
+
+## Current runtime behavior and limitations
+
+This matters if you are building advanced bots.
+
+### Important limitation: execution is still linear
+
+The current compiler/runtime still executes projects in a **linear sequence**.
+
+That means:
+
+- It does not yet provide full arbitrary BotGhost-style branch routing by handles
+- It is better to split complex flows across multiple projects instead of trying to force one huge graph
+
+So if you need advanced ticketing, modmail, or escalation systems, prefer:
+
+- duplicate guard project
+- open project
+- close project
+- webhook intake project
+- timed cleanup project
+
+instead of one giant `if/else` tree
+
+### Multiple incoming edges are blocked
+
+The builder currently prevents multiple blocks from connecting into one target block.
+
+This is intentional because the current execution model would become ambiguous and break logic.
+
+### Unsaved edits are not live
+
+If the bot still acts like old logic:
+
+- make sure the project was saved
+- confirm the correct command/event project is enabled
+- wait briefly for Discord slash command registration if you changed command definitions
+
+## Practical advanced systems you can build now
+
+With the current runtime, these are realistic:
+
+- Advanced ticketing
+- Thread-based modmail
+- Welcome systems
+- Sticky messages
+- Logging systems
+- Case escalation systems
+- Button-driven support systems
+- Webhook intake systems
+
+These are **not** full parity yet:
+
+- Complex visual branching with arbitrary graph joins
+- Fully general "build anything at all" logic graphs
+- Full DM relay modmail out of the box
+
+## Troubleshooting custom builder issues
+
+<AccordionGroup>
+  <Accordion title="The bot still uses old command content">
+    The builder is manual-save. The live bot only uses the last saved project state.
+  </Accordion>
+  <Accordion title="The command appears in Discord but says the application did not respond">
+    Make sure the connected bot runtime is actually online and the command project is enabled.
+  </Accordion>
+  <Accordion title="My button does nothing">
+    Confirm the button `customId` matches the `interaction_button` event project's trigger `customId`.
+  </Accordion>
+  <Accordion title="A duplicate ticket/modmail check is not working">
+    Use `Channel Exists` or `Find a Channel`, and make sure the naming pattern matches the created channel or thread name exactly.
+  </Accordion>
+  <Accordion title="My webhook event is not firing">
+    Check the route, secret header, and whether the webhook event project is enabled.
+  </Accordion>
+  <Accordion title="Why can't I connect two blocks into one block?">
+    The current runtime does not support multi-parent execution safely, so the builder blocks that connection.
+  </Accordion>
+</AccordionGroup>
+
+## Recommended workflow
+
+For reliable advanced systems:
+
+1. Configure variables first
+2. Build and save reusable message templates
+3. Keep each event project focused on one job
+4. Use explicit channel/thread naming conventions
+5. Use `Channel Exists` before `Create Channel` or `Create Thread`
+6. Save often and test with a live connected bot
+7. Add logging blocks so failures are visible
+
+## Related guides
+
+<CardGroup cols={2}>
+  <Card title="Discord Deployment" icon="message" href="/guides/discord">
+    Connect your Discord bot, configure intents, and understand routing.
+  </Card>
+  <Card title="Discord Command Reference" icon="terminal" href="/guides/discord-command-reference">
+    Default built-in Verba slash commands and permission behavior.
+  </Card>
+</CardGroup>

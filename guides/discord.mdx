@@ -149,15 +149,21 @@ Default command set:
 You can enable/disable each command in Discord module settings.
 
 <Note>
-  In the current release, Discord activity/presence editing is available on all
-  plans. The voice channel join/leave commands are reserved for `Ultra`.
+  Discord activity/presence editing is available on all plans. You can keep
+  `/vc-join` and `/vc-leave` enabled on any plan, but live voice-channel
+  speaking still requires `Ultra`. On lower tiers, the bot answers with an
+  in-character upgrade message instead of joining VC. Normal generated voice
+  messages remain free.
 </Note>
 
 ## Voice join without slash commands
 
-Ultra verbs do not need `/vc-join` every time. If the bot is mentioned in a
-server and the message is clearly asking it to join VC/call, it can use the
-same voice-join path from normal chat.
+Verbs do not always need `/vc-join`. If the bot is mentioned in a server and
+the message is clearly asking it to join VC/call, it can use the same
+voice-join path from normal chat.
+
+Live VC speaking still requires `Ultra`. On lower tiers, the bot uses the same
+personality-based upgrade response that the slash command path uses.
 
 ## Channel awareness
 
@@ -176,8 +182,11 @@ instead of sounding detached from the channel.
 - `/activate-channel` and `/remove-channel` require Administrator permission.
 - `/reset` in server requires Administrator, server owner, or bot owner.
 - `/reset` in DM is user-scoped and available without server permissions.
-- Voice commands require Voice Engine enabled for the verb, and `/vc-join` plus
-  `/vc-leave` are Ultra-only in the current dashboard release.
+- Voice commands require Voice Engine enabled for the verb.
+- Live voice-channel speaking requires `Ultra`. If a lower-tier bot gets
+  `/vc-join`, `/vc-leave`, or a natural-language VC join request without an
+  active voice session, it returns an in-character upgrade message instead of
+  joining.
 
 ## Profile and presence settings
 
@@ -200,6 +209,23 @@ In the Discord module you can:
 - Refresh profile/server data
 - Leave specific servers
 - Copy invite link quickly
+
+## Custom builder
+
+Verba also includes a dedicated **Discord Custom Builder** for creating:
+
+- Slash commands
+- Buttons, select menus, and modal flows
+- Timed automations
+- Webhook intake flows
+- Ticketing and modmail systems
+- Welcome and logging systems
+
+Use the custom builder when you want your connected Verba bot to behave more like a purpose-built automation bot instead of only a conversational AI bot.
+
+<Note>
+  The builder is manual-save. Unsaved canvas changes are local and do not go live until you save.
+</Note>
 
 ## Typical failure patterns
 
@@ -229,6 +255,9 @@ In the Discord module you can:
 </AccordionGroup>
 
 <CardGroup cols={2}>
+  <Card title="Discord Custom Builder" icon="wand-magic-sparkles" href="/guides/custom-builder">
+    Build commands, buttons, webhook flows, tickets, modmail, and timed automations.
+  </Card>
   <Card title="Discord Command Reference" icon="terminal" href="/guides/discord-command-reference">
     Exact behavior and permission rules for each slash command.
   </Card>

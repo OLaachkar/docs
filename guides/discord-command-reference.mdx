@@ -19,8 +19,17 @@ Verba can register these slash commands:
 Each command can be toggled on/off in your Discord module settings.
 
 <Note>
-  Discord activity and presence editing are not plan-locked. The current
-  plan-gated Discord controls are the voice channel join/leave commands.
+  This page covers Verba's built-in Discord slash commands. Custom-builder slash
+  commands are documented separately in the
+  [Discord Custom Builder](/guides/custom-builder) guide.
+</Note>
+
+<Note>
+  Discord activity and presence editing are not plan-locked. `/vc-join` and
+  `/vc-leave` can stay enabled on any plan, but live voice-channel speaking
+  still requires `Ultra`. On lower tiers, the bot returns an in-character
+  upgrade response instead of joining VC. Normal generated voice messages
+  remain free.
 </Note>
 
 ## Permission matrix
@@ -33,8 +42,8 @@ Each command can be toggled on/off in your Discord module settings.
 | `/reset` | Server | Administrator, server owner, or bot owner |
 | `/generate` | Server/DM | Command enabled + image generation enabled |
 | `/dashboard` | Server/DM | Command enabled |
-| `/vc-join` | Server | `Ultra` plan + voice engine enabled + voice channel access |
-| `/vc-leave` | Server | `Ultra` plan + voice engine enabled |
+| `/vc-join` | Server | Command enabled + voice engine enabled + voice channel access. Live VC speaking requires `Ultra` |
+| `/vc-leave` | Server | Command enabled + voice engine enabled. Disconnecting live VC still depends on the active voice session / `Ultra` path |
 | `/ping` | Server/DM | Command enabled |
 
 ## Command behavior details
@@ -68,19 +77,23 @@ Each command can be toggled on/off in your Discord module settings.
 
 - Joins the requester's voice channel (or selected voice channel parameter).
 - Fails if bot lacks voice permissions or voice runtime dependencies.
-- Available on the `Ultra` plan in the current release.
+- Live VC speaking requires the `Ultra` plan.
+- On lower tiers, the bot responds in personality that voice-channel speaking
+  requires `Ultra`, that voice messages are still free, and that billing is at
+  `https://verba.ink/billing`.
 
 ### Natural-language voice join
 
-- Ultra bots can also join from a normal mention message when the message is
-  clearly asking them to join VC/call.
+- Bots can also receive the same request from a normal mention message when the
+  message is clearly asking them to join VC/call.
 - This uses the same join rules as `/vc-join`; plan, permissions, and channel
   access still apply.
 
 ### `/vc-leave`
 
 - Leaves current voice channel if connected.
-- Available on the `Ultra` plan in the current release.
+- If there is no active voice session and the bot is not on `Ultra`, it returns
+  the same in-character upgrade response instead.
 
 ### `/ping`
 
@@ -129,6 +142,11 @@ Frequently used template variables:
 - `{verb}`
 - `{user}`
 
-<Card title="Discord Deployment" icon="message" href="/guides/discord">
-  Setup guide for connection, intents, profiles, and server routing.
-</Card>
+<CardGroup cols={2}>
+  <Card title="Discord Deployment" icon="message" href="/guides/discord">
+    Setup guide for connection, intents, profiles, and server routing.
+  </Card>
+  <Card title="Discord Custom Builder" icon="wand-magic-sparkles" href="/guides/custom-builder">
+    Build custom slash commands, buttons, events, timed automations, and webhooks.
+  </Card>
+</CardGroup>
