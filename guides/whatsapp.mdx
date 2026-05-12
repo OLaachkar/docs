@@ -1,0 +1,147 @@
+---
+title: "WhatsApp module"
+description: "Connect a verb to WhatsApp, choose private or public verbs, and chat with text, images, and voice."
+---
+
+## What the WhatsApp module does
+
+The WhatsApp module lets someone message the Verba WhatsApp number, sign in with
+a secure authorization link, pick a verb, and continue the conversation inside
+WhatsApp.
+
+It supports:
+
+- Your own private verbs
+- Public verbs from Explore
+- Normal text chat
+- Image understanding
+- Image generation
+- Voice messages
+- Reply context from WhatsApp replies
+- Switching or disconnecting the connected verb
+
+## Before you start
+
+You need:
+
+- A Verba account
+- At least one verb, or a public verb you want to talk to
+- WhatsApp installed on your phone or desktop
+- The Verba WhatsApp number shown on the WhatsApp module page
+
+<Note>
+  You do not need to paste a token or create a WhatsApp bot yourself. The module
+  uses the shared Verba WhatsApp number and links each chat to the verb you pick.
+</Note>
+
+## Connect a verb to WhatsApp
+
+<Steps>
+  <Step title="Open the WhatsApp module">
+    Go to your verb dashboard, open Settings or Modules, then choose WhatsApp.
+  </Step>
+  <Step title="Message the Verba WhatsApp number">
+    Send any message to the number shown on the module page. Verba replies with
+    a secure authorization link.
+  </Step>
+  <Step title="Sign in and pick a verb">
+    Open the link, sign in, then choose one of your verbs or a public verb.
+  </Step>
+  <Step title="Return to WhatsApp">
+    After you choose a verb, the modal closes and sends you back to WhatsApp.
+    The chat is now connected.
+  </Step>
+</Steps>
+
+## Choosing public verbs
+
+The authorization modal shows your own verbs first, then public verbs. Use the
+search box to find a verb by name, tag, or description.
+
+This means a WhatsApp chat can be connected to:
+
+- A private verb you created
+- A public verb from another creator
+- A different verb later with `/switch`
+
+## Media support
+
+WhatsApp conversations can use more than plain text.
+
+### Images
+
+Send an image with a message and the connected verb can inspect it, answer
+questions about it, or use it as context for the next reply.
+
+If your verb has image generation enabled, you can also ask it to create an
+image. Generated images are sent back to the WhatsApp chat as media.
+
+### Voice messages
+
+Send a WhatsApp voice note and Verba transcribes it before passing it to the
+verb. If your verb has voice replies enabled, it can answer with voice as well.
+
+### Reply context
+
+When you reply to a specific WhatsApp message, Verba includes that quoted message
+as context. This helps the verb understand what "that", "this one", or "the
+image above" refers to.
+
+## WhatsApp commands
+
+| Command | What it does |
+| --- | --- |
+| `/help` | Shows the available WhatsApp commands. |
+| `/status` | Shows the currently connected verb. |
+| `/switch` | Opens the verb picker again so you can connect another verb. |
+| `/disconnect` | Disconnects the current chat from the selected verb. |
+
+After enough replies, Verba may remind the user that `/disconnect` is available
+if they want to change or stop the connected verb.
+
+## Best practices
+
+- Send a clear first message after connecting so the verb knows what you want.
+- Add a short caption when sending images.
+- Use WhatsApp replies when asking follow-up questions about an earlier message.
+- Use `/switch` instead of disconnecting if you only want to talk to another verb.
+- Use `/disconnect` when the chat should no longer be linked to any verb.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="The authorization link expired">
+    Send another message to the Verba WhatsApp number, or use `/switch` if the
+    chat is already connected. Verba will send a fresh link.
+  </Accordion>
+  <Accordion title="I picked the wrong verb">
+    Send `/switch` in WhatsApp and choose a different verb from the modal.
+  </Accordion>
+  <Accordion title="The verb did not understand an image">
+    Re-send the image with a short caption explaining what you want the verb to
+    look at. Clearer images and direct questions work best.
+  </Accordion>
+  <Accordion title="Voice did not work">
+    Try sending the message again, or type the message as text. Very short,
+    noisy, or interrupted voice notes can fail transcription.
+  </Accordion>
+  <Accordion title="I want to stop the chat">
+    Send `/disconnect`. The chat will detach from the verb until you connect one
+    again.
+  </Accordion>
+</AccordionGroup>
+
+<CardGroup cols={2}>
+  <Card title="Discord deployment" icon="discord" href="/guides/discord">
+    Connect a verb to Discord servers, channels, commands, and voice.
+  </Card>
+  <Card title="Image generation" icon="image" href="/guides/image-generation">
+    Learn how image creation works across Verba chats and integrations.
+  </Card>
+  <Card title="Voice and audio" icon="microphone" href="/guides/voice-and-audio">
+    Configure voice messages and audio behavior for your verbs.
+  </Card>
+  <Card title="Troubleshooting" icon="life-ring" href="/guides/troubleshooting">
+    Fast fixes for common account, chat, and module issues.
+  </Card>
+</CardGroup>
